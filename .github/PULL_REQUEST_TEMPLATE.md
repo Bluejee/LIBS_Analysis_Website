@@ -1,7 +1,5 @@
-<!-- Changes to be made in the line below -->
-<!-- Thank you for contributing to <**Project**>! -->
-<!-- Changes to be made in the line below -->
-<!-- Learn more about the process in the contributing guidelines: https://github.com/Bluejee/<**Project**>/blob/main/CONTRIBUTING.md -->
+<!-- Thank you for contributing to the LIBS Analysis Website -->
+<!-- Learn more about the process in the contributing guidelines: https://github.com/Bluejee/LIBS_Analysis_Website/blob/main/CONTRIBUTING.md -->
 
 ## Overview: What does this pull request change?
 <!-- Please make sure to cite the Issue you are referring to.-->
