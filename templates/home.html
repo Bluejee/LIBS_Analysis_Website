@@ -1,4 +1,89 @@
 {% extends "layout.html" %}
 {% block content%}
-    <h1>HOME PAGE</h1>
+
+
+<main class="mt-0 mb-0">
+
+  <section class="main-section-1" style="height: 92vh; width: 95 vw;">
+    <div class="pt-4">
+      <h1 style="font-size:5vw" class="text-center text-light fw-bolder">LIBS ANALYZER</h1>
+    </div>
+
+    <div class="mt-3">
+      <div class="d-flex  justify-content-evenly flex-row bd-highlight mb-3">
+
+        <div class="p-2 bd-highlight"><img width="300vw" height="300vw"
+            src="{{ url_for('static', filename='/media/Group11.jpg') }}" alt=""></div>
+        <!-- <h1> -->
+
+        <div class="my-auto p-2 bd-highlight b"><a class="btn btn-lg btn-green fw-bold" href="#section-2">GET
+            STARTED</a></div>
+        <!-- </h1> -->
+        <div class="p-2 bd-highlight" id="my_p1"><img width="300vw" height="300vw"
+            src="{{ url_for('static', filename='/media/Group12.jpg') }}" alt=""></div>
+      </div>
+    </div>
+  </section>
+
+  <span class="anchor" id="section-2"></span>
+
+  <section class="">
+
+    <div class="d-flex flex-column">
+      <div class="p-2">
+        <form method=post enctype=multipart/form-data hidden>
+          <input type=file name=file id='file'>
+        
+        <!-- <input type=file name='Input Spectral Data' class="btn btn-lg section-2-btn" style="color: #000000 ;"> -->
+      </form>
+        <button id="file_input" onclick="clickHandler()" class="btn btn-lg section-2-btn" style="color: #000000 ;">Input Spectral Data</button>
+      </div>
+      <div class="p-2">
+        <canvas id="myChart"></canvas>
+      </div>
+      <div class="p-2">
+        <button class="btn btn-lg section-2-btn-next" style="position: 100vw;" style="color: #000000 ;">NEXT</button>
+      </div>
+
+    </div>
+  </section>
+
+  <span class="anchor" id="section-3"></span>
+  <section class="container">
+    <h2>Element Selector</h2>
+  </section>
+  <section>
+  </section>
+</main>
+
 {% endblock content%}
+
+{% block JScript%}
+<script>
+  const ctx = document.getElementById('myChart');
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+      datasets: [{
+        label: '# of Votes',
+        data: [12, 19, 3, 5, 2, 3],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+
+  function clickHandler() {
+        target = document.getElementById('file').click()        
+      }
+      let element = document.getElementById('file_input')
+</script>
+{% endblock JScript%}

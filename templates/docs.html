@@ -1,4 +1,37 @@
 {% extends "layout.html" %}
 {% block content%}
-    <h1>Documentation</h1>
+<h1>Documentation</h1>
+<section>
+    <p class="container">
+        Laser-Induced Breakdown Spectroscopy (LIBS) is a rapid, portable, in situ atomic spectroscopy technique used to
+        measure the concentration of major and trace elements in solid, liquid, or air samples, or to record the
+        chemical
+        signature (fingerprint) of a material. Each LIBS spectrum contains not only information about the concentrations
+        of
+        all naturally-occurring elements, but also some isotopic ratios and information about the atomic structure of
+        the
+        material. Read more...
+    </p>
+</section>
+<section>
+    <h2>
+        Parameters and use cases
+    </h2>
+    <p>The parameters used for analysis are explained in detail in the following sub-sections</p>
+    <h3>
+        Input Spectral Data
+    </h3>
+    <p>‘LIBS analyser’ accepts the spectral data from the user in csv format. The first column should be the wavelength
+        of the spectral lines. The second column should be the intensity. Header should not be included. An image of a
+        sample spectral data is provided for reference.</p>
+</section>
+<section>
+    <h2>Contributing</h2>
+    <p>LIBS ANALYSER is a community project maintained for and by its users. There are many ways you can help!</p>
+    <ul>
+        <li>Help other users on discourse</li>
+        <li>Report a bug or request a feature on Github or</li>
+        <li>Improve the documentation and code.</li>
+    </ul>
+</section>
 {% endblock content%}

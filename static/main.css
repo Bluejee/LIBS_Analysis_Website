@@ -1,0 +1,95 @@
+.btn-green {
+    background-color: rgb(81, 223, 155);
+}
+
+.favic {
+    width: 48px;
+    height: 48px;
+}
+
+/* .mybg {
+    background-color: rgb(191, 237, 252);
+  } */
+
+
+
+.section-2-btn {
+    margin: 2vh 5vw 7vh 10vw;
+    border-radius: 2.8125rem;
+    background: #D9D9D9;
+}
+
+.anchor {
+    display: block;
+    height: 10vh;
+    /*same height as header*/
+    margin-top: -10vh;
+    /*same height as header*/
+    visibility: hidden;
+}
+
+.next {
+    align-self: center;
+}
+
+.section-2-btn-next {
+    align-self: center;
+    margin: 0vh 35vw 0vh 35vw;
+    border-radius: 5rem;
+    background: #D9D9D9;
+
+    display: flex;
+    width: 27.4375rem;
+    height: 3.125rem;
+
+    justify-content: center;
+
+
+
+}
+
+.periodic-table {
+    display: grid;
+    grid-template-columns: repeat(18, 1fr);
+    grid-gap: 5px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Styling for individual elements */
+.element {
+    position: relative;
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* Styling for dimmed elements */
+.element input[type="radio"]:checked~label .element {
+    opacity: 0.25;
+}
+
+/* Styling for the bright effect when selected */
+.element input[type="radio"]:checked+label .element {
+    background-color: #bb3611;
+    /* Change this color as you like */
+}
+
+/* Hide the radio buttons */
+input[type="radio"] {
+    display: none;
+}
+
+label {
+    cursor: pointer;
+}
+
+footer {
+    background-color: rgb(215, 223, 112)(255, 204, 0);
+}
+
+table #H {
+    background-color: red;
+
+}
