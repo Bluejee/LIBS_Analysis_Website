@@ -3,7 +3,6 @@
 
 
 <main class="mt-0 mb-0">
-
   <section class="main-section-1" style="height: 92vh; width: 95 vw;">
     <div class="pt-4">
       <h1 style="font-size:5vw" class="text-center text-light fw-bolder">LIBS ANALYZER</h1>
@@ -25,24 +24,65 @@
     </div>
   </section>
 
-  <span class="anchor" id="section-2"></span>
+  <!-- <span class="anchor" id="section-2"></span> -->
+<form action="/" method="POST" enctype=multipart/form-data >
+  {{form.hidden_tag()}}
+  {{form.lower_wave.label()}}
+  {{form.lower_wave}} <br>
+  {% if form.lower_wave.errors %}
+          <div class="invalid-feedback">
+            err
+            {% for error in form.lower_wave.errors %}
+                <span>{{ error }}</span>
+            {% endfor %}
+          </div> 
+          <br><br>
+                               
+  {% endif %}
+    
 
-  <section class="">
 
-    <div class="d-flex flex-column">
-      <div class="p-2">
-        <form method=post enctype=multipart/form-data hidden>
-          <input type=file name=file id='file'>
-        
-        <!-- <input type=file name='Input Spectral Data' class="btn btn-lg section-2-btn" style="color: #000000 ;"> -->
-      </form>
-        <button id="file_input" onclick="clickHandler()" class="btn btn-lg section-2-btn" style="color: #000000 ;">Input Spectral Data</button>
+  {{form.upper_wave.label()}}
+  {{form.upper_wave}} <br>
+  {% if form.upper_wave.errors %}
+          <div class="invalid-feedback">
+            err
+            {% for error in form.upper_wave.errors %}
+                <span>{{ error }}</span>
+            {% endfor %}
+          </div>
+          <br><br>
+                                    
+  {% endif %}
+
+  {{form.baseline_intensity.label()}}
+  {{form.baseline_intensity}} <br>
+  {% if form.baseline_intensity.errors %}
+          <div class="invalid-feedback">
+            err
+            {% for error in form.baseline_intensity.errors %}
+                <span>{{ error }}</span>
+            {% endfor %}
+            </div>
+            <br>           
+  {% endif %}
+
+
+
+
+  <section class="section-2" style="height: 92vh; width: 95 vw;">
+    <div class="d-flex flex-column s2">
+      <div class="p-0">
+        {{form.input_file(id = 'file',onchange="plotGraph()")}}
+          <!-- <input type=file name='Input Spectral Data' class="btn btn-lg section-2-btn" style="color: #000000 ;"> -->
+        <button type ="button" id="file_input" onclick="clickHandler()" class="btn btn-lg section-2-btn" style="color: #000000 ;">Input
+          Spectral Data</button>
       </div>
-      <div class="p-2">
-        <canvas id="myChart"></canvas>
+      <div class="p-0">
+        <div class="graphc"><div id="graphContainer"></div></div>
       </div>
-      <div class="p-2">
-        <button class="btn btn-lg section-2-btn-next" style="position: 100vw;" style="color: #000000 ;">NEXT</button>
+      <div class="p-0">
+        <button type= 'button' class="btn btn-lg section-2-btn-next" style="color: #000000 ;">NEXT</button>
       </div>
 
     </div>
@@ -51,8 +91,62 @@
   <span class="anchor" id="section-3"></span>
   <section class="container">
     <h2>Element Selector</h2>
+    {{form.r_cutoff.label()}}
+    {{form.r_cutoff}} <br>
+    {% if form.r_cutoff.errors %}
+          <div class="invalid-feedback">
+            err
+            {% for error in form.r_cutoff.errors %}
+                <span>{{ error }}</span>
+            {% endfor %}
+          </div>
+           <br>             
+    {% endif %}
+
+    {{form.l_cutoff.label()}}
+    {{form.l_cutoff}} <br>
+    {% if form.l_cutoff.errors %}
+          <div class="invalid-feedback">
+            err
+            {% for error in form.l_cutoff.errors %}
+                <span>{{ error }}</span>
+            {% endfor %}
+          </div>
+          <br>
+                        
+    {% endif %}
+
+    {{form.n_peaks.label()}}
+    {{form.n_peaks}} <br>
+    {% if form.n_peaks.errors %}
+          <div class="invalid-feedback">
+            err
+            {% for error in form.n_peaks.errors %}
+                <span>{{ error }}</span>
+            {% endfor %}
+          </div>
+          <br>
+                        
+    {% endif %}
+  
+    {{form.PS}}
+    {% if form.PS.errors %}
+          <div class="invalid-feedback">
+            err
+            {% for error in form.PS.errors %}
+                <span>{{ error }}</span>
+            {% endfor %}
+          </div>
+          <br>
+                        
+    {% endif %}
+  
+    {{form.submit}}
+  
   </section>
+</form>
   <section>
+  {{form.selected_elements}}
   </section>
 </main>
 
@@ -60,30 +154,58 @@
 
 {% block JScript%}
 <script>
-  const ctx = document.getElementById('myChart');
+  google.charts.load('current', { 'packages': ['corechart'] });
 
-  new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-      datasets: [{
-        label: '# of Votes',
-        data: [12, 19, 3, 5, 2, 3],
-        borderWidth: 1
-      }]
-    },
-    options: {
-      scales: {
-        y: {
-          beginAtZero: true
+  function plotGraph() {
+    const fileInput = document.getElementById('file');
+    const file = fileInput.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const content = event.target.result;
+        const lines = content.split('\n');
+        const data = [];
+        headings = lines[0];
+        console.log(headings);
+
+        for (let i = 1; i < lines.length; i++) {  // Start from index 1 to skip header
+          const line = lines[i];
+          const value = parseFloat(line.trim());
+          if (!isNaN(value)) {
+            data.push(value);
+          }
         }
-      }
-    }
-  });
 
+        drawChart(data);
+      };
+      reader.readAsText(file);
+    }
+  }
+
+  function drawChart(data) {
+    const chartData = new google.visualization.DataTable();
+    chartData.addColumn('number', 'Index');
+    chartData.addColumn('number', 'Value');
+
+    for (let i = 0; i < data.length; i++) {
+      chartData.addRow([i, data[i]]);
+    }
+
+    const options = {
+      title: 'Graph Data',
+      curveType: 'function',
+      legend: { position: 'bottom' },
+      'width':1600,
+      'height':500
+    };
+
+    const chart = new google.visualization.LineChart(document.getElementById('graphContainer'));
+    chart.draw(chartData, options);
+  }
   function clickHandler() {
-        target = document.getElementById('file').click()        
-      }
-      let element = document.getElementById('file_input')
+    document.getElementById('file').click()
+  }
+  let element = document.getElementById('file_input')
 </script>
 {% endblock JScript%}

@@ -1,4 +1,11 @@
 {% extends "layout.html" %}
 {% block content%}
     <h1>Results</h1>
+
+    {% if 'file_list' in session: %}
+        {{session['file_list']}}
+        {% for file in session['file_list'] %}
+            <span>{{file}}</span>
+        {% endfor %}
+    {% endif %}
 {% endblock content%}

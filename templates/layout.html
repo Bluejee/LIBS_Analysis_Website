@@ -24,6 +24,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.3.3/chart.js"
     integrity="sha512-F4BEJjzO7gmh8s7E9L63CdmC2NPdU8jBLJanZDJcSQC+t2vA+fELwQLRHzqsOlgHFD5FCCo/EPWvNxmcV4JjUw=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script type="text/javascript"  src="https://www.gstatic.com/charts/loader.js"></script>
 
 </head>
 </head>
@@ -42,7 +43,7 @@
     <nav class="navbar navbar-fixed-top navbar-expand-lg navbar-light" style="background-color: rgb(191, 237, 252)">
       <div class="container-fluid">
         <img class='favic' src="{{url_for('static', filename='/media/openlibsicon.svg')}}" alt="icon">
-        <a class="navbar-brand" href="#">openLIBS</a>
+        <a class="navbar-brand" href="#">openLIBS</a><h2>{{session['uid']}}</h2>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
           aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
