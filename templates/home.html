@@ -1,81 +1,66 @@
 {% extends "layout.html" %}
 {% block content%}
-
-
 <main class="mt-0 mb-0">
   <section class="main-section-1" style="height: 92vh; width: 95 vw;">
     <div class="pt-4">
       <h1 style="font-size:5vw" class="text-center text-light fw-bolder">LIBS ANALYZER</h1>
     </div>
-
     <div class="mt-3">
       <div class="d-flex  justify-content-evenly flex-row bd-highlight mb-3">
 
         <div class="p-2 bd-highlight"><img width="300vw" height="300vw"
             src="{{ url_for('static', filename='/media/Group11.jpg') }}" alt=""></div>
-        <!-- <h1> -->
-
         <div class="my-auto p-2 bd-highlight b"><a class="btn btn-lg btn-green fw-bold" href="#section-2">GET
             STARTED</a></div>
-        <!-- </h1> -->
         <div class="p-2 bd-highlight" id="my_p1"><img width="300vw" height="300vw"
             src="{{ url_for('static', filename='/media/Group12.jpg') }}" alt=""></div>
       </div>
     </div>
   </section>
 
-  <!-- <span class="anchor" id="section-2"></span> -->
+<section id="section-2" class="section-2" style="height: 92vh; width: 95 vw;">
 <form action="/" method="POST" enctype=multipart/form-data >
   {{form.hidden_tag()}}
   {{form.lower_wave.label()}}
   {{form.lower_wave}} <br>
   {% if form.lower_wave.errors %}
           <div class="invalid-feedback">
-            err
             {% for error in form.lower_wave.errors %}
                 <span>{{ error }}</span>
             {% endfor %}
           </div> 
-          <br><br>
-                               
+          <br><br>                               
   {% endif %}
-    
-
 
   {{form.upper_wave.label()}}
   {{form.upper_wave}} <br>
   {% if form.upper_wave.errors %}
           <div class="invalid-feedback">
-            err
             {% for error in form.upper_wave.errors %}
                 <span>{{ error }}</span>
             {% endfor %}
           </div>
-          <br><br>
-                                    
+          <br><br>                                    
   {% endif %}
 
   {{form.baseline_intensity.label()}}
   {{form.baseline_intensity}} <br>
   {% if form.baseline_intensity.errors %}
           <div class="invalid-feedback">
-            err
             {% for error in form.baseline_intensity.errors %}
                 <span>{{ error }}</span>
             {% endfor %}
             </div>
-            <br>           
+            <br><br>          
   {% endif %}
 
-
-
-
-  <section class="section-2" style="height: 92vh; width: 95 vw;">
+  <span class="anchor" id="s_section-3"></span>
     <div class="d-flex flex-column s2">
       <div class="p-0">
         {{form.input_file(id = 'file',onchange="plotGraph()")}}
-          <!-- <input type=file name='Input Spectral Data' class="btn btn-lg section-2-btn" style="color: #000000 ;"> -->
-        <button type ="button" id="file_input" onclick="clickHandler()" class="btn btn-lg section-2-btn" style="color: #000000 ;">Input
+        
+        <button type ="button" id="file_input" onclick="clickHandler()" 
+        class="btn btn-lg section-2-btn" style="color: #000000 ;">Input
           Spectral Data</button>
       </div>
       <div class="p-0">
@@ -88,19 +73,18 @@
     </div>
   </section>
 
-  <span class="anchor" id="section-3"></span>
+  
   <section class="container">
     <h2>Element Selector</h2>
     {{form.r_cutoff.label()}}
     {{form.r_cutoff}} <br>
     {% if form.r_cutoff.errors %}
           <div class="invalid-feedback">
-            err
             {% for error in form.r_cutoff.errors %}
                 <span>{{ error }}</span>
             {% endfor %}
           </div>
-           <br>             
+          <br><br>             
     {% endif %}
 
     {{form.l_cutoff.label()}}
@@ -112,45 +96,41 @@
                 <span>{{ error }}</span>
             {% endfor %}
           </div>
-          <br>
-                        
+          <br><br>   
     {% endif %}
 
     {{form.n_peaks.label()}}
     {{form.n_peaks}} <br>
     {% if form.n_peaks.errors %}
           <div class="invalid-feedback">
-            err
             {% for error in form.n_peaks.errors %}
                 <span>{{ error }}</span>
             {% endfor %}
           </div>
-          <br>
-                        
+          <br><br>                        
     {% endif %}
   
     {{form.PS}}
     {% if form.PS.errors %}
           <div class="invalid-feedback">
-            err
             {% for error in form.PS.errors %}
                 <span>{{ error }}</span>
             {% endfor %}
           </div>
-          <br>
-                        
+          <br><br>                        
     {% endif %}
-  
-    {{form.submit}}
-  
   </section>
-</form>
-  <section>
-  {{form.selected_elements}}
-  </section>
-</main>
 
+  <section>
+    {{form.selected_elements.label}}
+    <br>
+    {{form.selected_elements()}}
+  </section>
+  {{form.submit}}
+</form>
+</main>
 {% endblock content%}
+
 
 {% block JScript%}
 <script>

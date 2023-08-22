@@ -43,7 +43,7 @@
     <nav class="navbar navbar-fixed-top navbar-expand-lg navbar-light" style="background-color: rgb(191, 237, 252)">
       <div class="container-fluid">
         <img class='favic' src="{{url_for('static', filename='/media/openlibsicon.svg')}}" alt="icon">
-        <a class="navbar-brand" href="#">openLIBS</a><h2>{{session['uid']}}</h2>
+        <a class="navbar-brand" href="{{ url_for('home') }}">openLIBS</a><h2>{{session['uid']}}</h2>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
           aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>

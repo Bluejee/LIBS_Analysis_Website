@@ -1,9 +1,9 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField,IntegerField, FloatField, SubmitField, BooleanField, SelectMultipleField
+from wtforms import IntegerField, FloatField, SubmitField, BooleanField, SelectMultipleField
 from wtforms.validators import DataRequired
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 
-element_symbols = {
+elem_symb = {
     'H': 'Hydrogen', 'He': 'Helium', 'Li': 'Lithium', 'Be': 'Beryllium', 'B': 'Boron', 'C': 'Carbon',
     'N': 'Nitrogen', 'O': 'Oxygen', 'F': 'Fluorine', 'Ne': 'Neon', 'Na': 'Sodium', 'Mg': 'Magnesium',
     'Al': 'Aluminum', 'Si': 'Silicon', 'P': 'Phosphorus', 'S': 'Sulfur', 'Cl': 'Chlorine', 'Ar': 'Argon',
@@ -24,18 +24,16 @@ element_symbols = {
     'Fm': 'Fermium', 'Md': 'Mendelevium', 'No': 'Nobelium', 'Lr': 'Lawrencium'
 }
 
+
 class InputForm(FlaskForm):
-    input_file = FileField('Data File',validators = [FileAllowed(['csv'])])
+    input_file = FileField('Data File',validators = [FileRequired(),FileAllowed(['csv'])])
     lower_wave = FloatField('lower wavelength',validators = [DataRequired()])
     upper_wave = FloatField('upper wavelength', validators = [DataRequired()])
     baseline_intensity = FloatField('baseline_intensity',validators = [DataRequired()])
     r_cutoff = FloatField('right cutoff',validators = [DataRequired()])
     l_cutoff = FloatField('left cutoff',validators = [DataRequired()])
     n_peaks = IntegerField('no. of peaks to match',validators = [DataRequired()])
-    selected_elements = SelectMultipleField('Select Elements', choices=[(symbol, element_symbols[symbol]) for symbol in element_symbols.keys()])
+    selected_elements = SelectMultipleField('Select Elements',
+                                             choices=[(sym,elem) for sym,elem in elem_symb.items()])
     PS = BooleanField('P')
     submit = SubmitField('Submit')
-    
-
-
-
