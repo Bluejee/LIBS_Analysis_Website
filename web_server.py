@@ -1,13 +1,15 @@
 import os
 import datetime as dt
 import secrets
-import numpy as np
 import json
+from zipfile import ZipFile
+import numpy as np
 from scipy.signal import find_peaks
 from flask import Flask, request, send_from_directory, render_template, url_for, redirect, session, send_file
 from werkzeug.utils import secure_filename
-from forms import InputForm, elem_symb
 from OpenLIBS.analysis import element_list_comparison
+from forms import InputForm, elem_symb
+
 
 
 app = Flask(__name__)
@@ -48,7 +50,7 @@ def libs_analysis(filename, element_list, lower_wavelength_limit, upper_waveleng
 
     data = np.genfromtxt(data_path, delimiter=',')
 
-    if line_type == True:
+    if line_type:
         line_type ='P'
     else:
         line_type = 'S'
@@ -132,6 +134,7 @@ def home():
                                       lower_error=session['log'][file_name]['l_cutoff'],
                                       upper_error=session['log'][file_name]['r_cutoff'],
                                       match_threshold=session['log'][file_name]['n_peaks'])
+            session['log'][file_name]['output'] = comp, log
             return redirect(url_for('results'))
         return render_template('home.html', form=form, sess=session['uid'])
 
@@ -157,23 +160,19 @@ def homed3():
 
 @app.route('/results')
 def results():
-    
     filename = session['recent_file']
     comparison_log_path = os.path.join(
         UPLOAD_FOLDER, session['uid'], 'output', f"{filename}_Full_comparison.json")
     simulation_log_path = os.path.join(
         UPLOAD_FOLDER, session['uid'], 'output', f"{filename}_Simulation_Details.log")
-    if os.path.exists(comparison_log_path) and os.path.exists(simulation_log_path):
-        
-        with open(comparison_log_path, 'r') as f:
-            json_output = f.read()
-        output ={
+    with open(comparison_log_path, 'r') as f:
+        json_output = f.read()
+    output ={
             'comp':comparison_log_path,
             'log': simulation_log_path,
             'data': json_output
         }
-        return render_template('results.html', output=output)
-    return render_template('results.html', title='Results')
+    return render_template('results.html', output=output)
 
 
 @app.route('/docs')
@@ -185,6 +184,20 @@ def docs():
 def about():
     return render_template('about.html', title='About')
 
+
+@app.route('/download')
+def download_file():
+    filename = session['recent_file']
+    comparison_log_path = os.path.join(
+        UPLOAD_FOLDER, session['uid'], 'output', f"{filename}_Full_comparison.json")
+    simulation_log_path = os.path.join(
+        UPLOAD_FOLDER, session['uid'], 'output', f"{filename}_Simulation_Details.log")
+    zip_path = os.path.join(
+        UPLOAD_FOLDER, session['uid'], 'output', f"{filename}_output.zip")
+    with ZipFile(zip_path, 'w') as zf:
+        zf.write(comparison_log_path, os.path.basename(comparison_log_path))
+        zf.write(simulation_log_path, os.path.basename(simulation_log_path))
+    return send_file(zip_path, as_attachment = True)
 
 if __name__ == '__main__':
     if not os.path.isdir(UPLOAD_FOLDER):

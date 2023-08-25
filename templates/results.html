@@ -1,12 +1,15 @@
 {% extends "layout.html" %}
 {% block content%}
     {% if output %}
-        {{output.log}} <br>
-        {{output.comp}} <br>
-
-        {{output.data}}
-
+        <a href="/download"><button class='btn btn-info'>Download</button></a> <br>
     {% endif %}
 {% endblock content%}
 
 
+{% block JScript %}
+<script>
+    var data_output = JSON.parse('{{ output.data }}');
+    data_output = JSON.stringify(data_output,null,'\t')
+    console.log(data_output)
+</script>
+{% endblock JScript %}
