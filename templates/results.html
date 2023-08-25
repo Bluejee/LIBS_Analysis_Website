@@ -1,20 +1,12 @@
 {% extends "layout.html" %}
 {% block content%}
-    {% if user_data %}
+    {% if output %}
+        {{output.log}} <br>
+        {{output.comp}} <br>
 
-        {% if user_data.rec_file %}
-            <h2> {{ user_data.rec_file}}</h2> <br>
-        {% endif %}
-        {% if user_data.file_list %}
-            {{ user_data.file_list}}
-            {% for file in user_data.file_list %}
-                <span>{{file}}</span><br>
-            {% endfor %}
-        {% endif %}
-        <br>
-        {% if user_data.log_data %}
-            {{ user_data.log_data}} <br>
-        {% endif %}
+        {{output.data}}
 
     {% endif %}
 {% endblock content%}
+
+

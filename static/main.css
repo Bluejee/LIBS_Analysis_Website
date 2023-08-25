@@ -2,6 +2,10 @@
     background-color: rgb(81, 223, 155);
 }
 
+body {
+    font-family: 'Roboto';
+}
+
 .favic {
     width: 48px;
     height: 48px;

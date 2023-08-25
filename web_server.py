@@ -1,26 +1,27 @@
 import os
 import datetime as dt
 import secrets
-from flask import Flask, request, render_template, url_for, redirect, session
+import numpy as np
+import json
+from scipy.signal import find_peaks
+from flask import Flask, request, send_from_directory, render_template, url_for, redirect, session, send_file
 from werkzeug.utils import secure_filename
 from forms import InputForm, elem_symb
-
-import numpy as np
-from scipy.signal import find_peaks
 from OpenLIBS.analysis import element_list_comparison
-import json
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '73e2889840a574502969a1ad279ef26f'
 
-UPLOAD_FOLDER = os.path.join(app.root_path, 'Files_toprocess')
+UPLOAD_FOLDER = os.path.join(app.root_path, 'session_files')
+
 
 
 def save_file(form_file):
     current_time = dt.datetime.now()
     formatted_time = current_time.strftime('%y%m%d%H%M%S')
     filename = secure_filename(form_file.filename)
-    if not os.path.isdir(os.path.join(app.root_path, 'Files_toprocess', session['uid'])):
+    if not os.path.isdir(os.path.join(UPLOAD_FOLDER, session['uid'])):
         os.mkdir(os.path.join(UPLOAD_FOLDER, session['uid']))
         os.mkdir(os.path.join(UPLOAD_FOLDER, session['uid'], 'output'))
     f_name, f_ext = os.path.splitext(filename)
@@ -38,15 +39,24 @@ def save_file(form_file):
 
 def libs_analysis(filename, element_list, lower_wavelength_limit, upper_wavelength_limit, baseline_intensity,
                   line_type='P', lower_error=0.2, upper_error=0.2, match_threshold=3):
-    data_path = os.path.join(UPLOAD_FOLDER, session['uid'], 'output', filename)
-    comparison_log_path = os.path.join(UPLOAD_FOLDER, session['uid'], "Full_comparison.json")
-    simulation_log_path = os.path.join(UPLOAD_FOLDER, session['uid'], "Simulation_Details.log")
+
+    data_path = os.path.join(UPLOAD_FOLDER, session['uid'], filename)
+    comparison_log_path = os.path.join(
+        UPLOAD_FOLDER, session['uid'], 'output', f"{filename}_Full_comparison.json")
+    simulation_log_path = os.path.join(
+        UPLOAD_FOLDER, session['uid'], 'output', f"{filename}_Simulation_Details.log")
 
     data = np.genfromtxt(data_path, delimiter=',')
 
+    if line_type == True:
+        line_type ='P'
+    else:
+        line_type = 'S'
+
     # Filter data based on wavelength limits
 
-    data = data[(data[:, 0] >= lower_wavelength_limit) & (data[:, 0] <= upper_wavelength_limit)]
+    data = data[(data[:, 0] >= lower_wavelength_limit) &
+                (data[:, 0] <= upper_wavelength_limit)]
 
     peak_indices, _ = find_peaks(data[:, 1], height=baseline_intensity)
 
@@ -74,7 +84,8 @@ def libs_analysis(filename, element_list, lower_wavelength_limit, upper_waveleng
         json.dump(out, log_file)
 
     # Extract the detected element list based on 'is_match' key in the 'out' dictionary
-    detected_element_list = [element for element, result in out.items() if result['is_match']]
+    detected_element_list = [element for element,
+                             result in out.items() if result['is_match']]
 
     # Write the detected element list to the log file
     with open(simulation_log_path, 'w') as log_file:
@@ -88,6 +99,8 @@ def libs_analysis(filename, element_list, lower_wavelength_limit, upper_waveleng
         log_file.write(f'match_threshold :: {match_threshold}\n')
         log_file.write(f"Compared Elements :: {element_list}\n")
         log_file.write(f'Detected Elements :: {detected_element_list}\n')
+
+    return comparison_log_path, simulation_log_path
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -110,6 +123,15 @@ def home():
                 'selected_elements': selected_symbols,
                 'PS': form.PS.data
             }
+            comp, log = libs_analysis(filename=file_name,
+                                      element_list=session['log'][file_name]['selected_elements'],
+                                      lower_wavelength_limit=session['log'][file_name]['lower_wave'],
+                                      upper_wavelength_limit=session['log'][file_name]['upper_wave'],
+                                      baseline_intensity=session['log'][file_name]['baseline_intensity'],
+                                      line_type=session['log'][file_name]['PS'],
+                                      lower_error=session['log'][file_name]['l_cutoff'],
+                                      upper_error=session['log'][file_name]['r_cutoff'],
+                                      match_threshold=session['log'][file_name]['n_peaks'])
             return redirect(url_for('results'))
         return render_template('home.html', form=form, sess=session['uid'])
 
@@ -135,16 +157,22 @@ def homed3():
 
 @app.route('/results')
 def results():
-    if 'file_list' in session:
-        file_list = session['file_list']
-        rec_file = session['recent_file']
-        user_data = {
-            'file_list': file_list,
-            'rec_file': rec_file,
-            'log_data': session['log'][rec_file]
+    
+    filename = session['recent_file']
+    comparison_log_path = os.path.join(
+        UPLOAD_FOLDER, session['uid'], 'output', f"{filename}_Full_comparison.json")
+    simulation_log_path = os.path.join(
+        UPLOAD_FOLDER, session['uid'], 'output', f"{filename}_Simulation_Details.log")
+    if os.path.exists(comparison_log_path) and os.path.exists(simulation_log_path):
+        
+        with open(comparison_log_path, 'r') as f:
+            json_output = f.read()
+        output ={
+            'comp':comparison_log_path,
+            'log': simulation_log_path,
+            'data': json_output
         }
-        return render_template('results.html', title='Results', user_data=user_data)
-        # file_list = file_list, rec_file=rec_file, log_data=session['log'][rec_file])
+        return render_template('results.html', output=output)
     return render_template('results.html', title='Results')
 
 
@@ -159,6 +187,6 @@ def about():
 
 
 if __name__ == '__main__':
-    if not os.path.isdir(os.path.join(app.root_path, 'Files_toprocess')):
-        os.mkdir(os.path.join(app.root_path, 'Files_toprocess'))
+    if not os.path.isdir(UPLOAD_FOLDER):
+        os.mkdir(UPLOAD_FOLDER)
     app.run(debug=True)

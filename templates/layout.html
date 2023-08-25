@@ -8,6 +8,9 @@
     integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='main.css')}}">
   <link rel="shortcut icon" href="{{ url_for('static', filename='/media/openlibsicon.svg') }}">
+  <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+
+
 
   {% if title %}
   <title>OpenLIBS - {{title}}</title>
@@ -20,13 +23,6 @@
       background-size: 100% 100%;
     }
   </style>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.3.3/chart.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.3.3/chart.js"
-    integrity="sha512-F4BEJjzO7gmh8s7E9L63CdmC2NPdU8jBLJanZDJcSQC+t2vA+fELwQLRHzqsOlgHFD5FCCo/EPWvNxmcV4JjUw=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script type="text/javascript"  src="https://www.gstatic.com/charts/loader.js"></script>
-
-</head>
 </head>
 
 <body>
@@ -50,8 +46,6 @@
         </button>
         <div class="collapse navbar-collapse mybg-cyan" id="navbarSupportedContent">
           <ul class="navbar-nav ms-auto me-auto mb-2 mb-lg-0">
-            <!-- <li class="nav-item pe-5"><a style="background-color: rgba(173, 182, 184, .7) ; border-radius: 25px"
-                class="nav-link" href="{{ url_for('home') }}">HOME</a></li> -->
             <li class="nav-item pe-5"><a class="nav-link" href="{{ url_for('home') }}">HOME</a></li>
             <li class="nav-item pe-5"><a class="nav-link" href="{{ url_for('docs') }}">DOCS</a></li>
             <li class="nav-item pe-5"><a class="nav-link" href="{{ url_for('docs') }}">GITHUB</a></li>
