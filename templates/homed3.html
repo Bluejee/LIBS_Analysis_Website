@@ -138,37 +138,10 @@
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 <script src="https://cdn.plot.ly/plotly-2.25.2.min.js" charset="utf-8"></script>
 <script>
-  
-  function plotGraph() {
-
-    const fileInput = document.getElementById('file');
-    const file = fileInput.files[0];
-
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function (event) {
-        const content = event.target.result;
-        const data2 = d3.csvParse(content);
-        // document.write(content)
-        drawChart(data,x,y);
-        DrawChart2(lines, "test2")
-      };
-      reader.readAsText(file);
-    }
-  }
-
-  function drawChart(data,x,y) {
-    Plotly.newPlot("test", {
-	margin: { t: 0 } } );
-  }
   function clickHandler() {
     document.getElementById('file').click()
   }
   let element = document.getElementById('file_input')
-
-  function DrawChart2(data,idvar){
-    Plotly.newPlot(idvar,data, {
-	margin: { t: 0 } } );
-  }
 </script>
+<script src="{{url_for('static', filename='plot.js')}}"></script>
 {% endblock JScript%}

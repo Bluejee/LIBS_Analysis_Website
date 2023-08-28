@@ -1,24 +1,18 @@
 {% extends "layout.html" %}
 {% block content%}
 <main class="mt-0 mb-0">
-  <section class="main-section-1" style="height: 92vh; width: 95 vw;">
+  <section class="main-section-1" id="secion1">
     <div class="pt-4">
       <h1 style="font-size:5vw" class="text-center text-light fw-bolder">LIBS ANALYZER</h1>
     </div>
-    <div class="mt-3">
-      <div class="d-flex  justify-content-evenly flex-row bd-highlight mb-3">
-
-        <div class="p-2 bd-highlight"><img width="300vw" height="300vw"
-            src="{{ url_for('static', filename='/media/Group11.jpg') }}" alt=""></div>
-        <div class="my-auto p-2 bd-highlight b"><a class="btn btn-lg btn-green fw-bold" href="#section-2">GET
+    <div class="startcite"> 
+        <div class="p-2"><a class="btn btn-lg btn-color fw-bold start" href="#section-2">GET
             STARTED</a></div>
-        <div class="p-2 bd-highlight" id="my_p1"><img width="300vw" height="300vw"
-            src="{{ url_for('static', filename='/media/Group12.jpg') }}" alt=""></div>
+        <div class="p-2"><a class="btn btn-sm cite" href="#">Cite Us!</a></div>
       </div>
-    </div>
   </section>
 
-<section id="section-2" class="section-2" style="height: 92vh; width: 95 vw;">
+<section id="section-2" class="section-2">
 <form action="/" method="POST" enctype=multipart/form-data >
   {{form.hidden_tag()}}
   {{form.lower_wave.label()}}
@@ -66,16 +60,17 @@
       <div class="p-0">
         <div class="graphc"><div id="graphContainer"></div></div>
       </div>
+      <div id="test"></div>
       <div class="p-0">
         <button type= 'button' class="btn btn-lg section-2-btn-next" style="color: #000000 ;">NEXT</button>
       </div>
-
+        
     </div>
   </section>
 
   
-  <section class="container">
-    <h2>Element Selector</h2>
+  <section class="section-2" id = "section-2">
+    
     {{form.r_cutoff.label()}}
     {{form.r_cutoff}} <br>
     {% if form.r_cutoff.errors %}
@@ -110,7 +105,7 @@
           <br><br>                        
     {% endif %}
   
-    {{form.PS}}
+    <span>Search for Persistant</span> {{form.PS}}
     {% if form.PS.errors %}
           <div class="invalid-feedback">
             {% for error in form.PS.errors %}
@@ -121,71 +116,30 @@
     {% endif %}
   </section>
 
-  <section>
+  <section class="section-3" id = "section-3">
+    <h2>Element Selector</h2>
     {{form.selected_elements.label}}
     <br>
     {{form.selected_elements()}}
+    <br>
+    <br>
+    {{form.submit}}
   </section>
-  {{form.submit}}
+  
 </form>
 </main>
 {% endblock content%}
 
 
 {% block JScript%}
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://cdn.plot.ly/plotly-2.25.2.min.js" charset="utf-8"></script>
 <script>
-  google.charts.load('current', { 'packages': ['corechart'] });
-
-  function plotGraph() {
-    const fileInput = document.getElementById('file');
-    const file = fileInput.files[0];
-
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function (event) {
-        const content = event.target.result;
-        const lines = content.split('\n');
-        const data = [];
-        headings = lines[0];
-        console.log(headings);
-
-        for (let i = 1; i < lines.length; i++) {  // Start from index 1 to skip header
-          const line = lines[i];
-          const value = parseFloat(line.trim());
-          if (!isNaN(value)) {
-            data.push(value);
-          }
-        }
-
-        drawChart(data);
-      };
-      reader.readAsText(file);
-    }
-  }
-
-  function drawChart(data) {
-    const chartData = new google.visualization.DataTable();
-    chartData.addColumn('number', 'Index');
-    chartData.addColumn('number', 'Value');
-
-    for (let i = 0; i < data.length; i++) {
-      chartData.addRow([i, data[i]]);
-    }
-
-    const options = {
-      title: 'Graph Data',
-      curveType: 'function',
-      legend: { position: 'bottom' },
-      'width':1600,
-      'height':500
-    };
-
-    const chart = new google.visualization.LineChart(document.getElementById('graphContainer'));
-    chart.draw(chartData, options);
-  }
   function clickHandler() {
     document.getElementById('file').click()
   }
   let element = document.getElementById('file_input')
 </script>
+<script src="{{url_for('static', filename='plot.js')}}"></script>
+
 {% endblock JScript%}
