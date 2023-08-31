@@ -1,6 +1,8 @@
-# LIBS Analysis Website
+# LIBS_Analysis_Website
 
-This is a website that allows users to perform qualitative analysis of Laser Induced Breakdown Spectroscopy online, with ease of use.
+Laser Induced Breakdown Spectroscopy (LIBS) is a versatile tool for quantitatively and qualitatively analysing a sample using laser ablation. It is a rapid and portable technique that requires no sample preparation. In LIBS the optical emissions from the plasma plume produced by the pulsed laser ablation of the sample surface are recorded and compared to a database of atomic emission spectra of known materials.
+
+This website provides a convenient environment for the analysis of LIBS spectra to obtain qualitative information about the sample. The website uses the latest version of the [OpenLIBS package](https://github.com/Bluejee/OpenLIBS) enabling direct and quick access.
 
 ## Help with LIBS Analysis Website
 
@@ -19,4 +21,8 @@ I value a positive and respectful community, and I kindly ask that you follow ou
 Please take a moment to review the [Code of Conduct](https://github.com/Bluejee/LIBS_Analysis_Website/blob/main/CODE_OF_CONDUCT.md).
 
 ## License
-Please refer the [License](https://github.com/Bluejee/LIBS_Analysis_Website/blob/main/LICENSE.txt) of this project to understand about your rights.
+Please refer to the [License](https://github.com/Bluejee/LIBS_Analysis_Website/blob/main/LICENSE.txt) of this project to understand your rights.
+
+## Acknowledgements
+
+This work was carried out in [Applied Optics Division](https://physics.cusat.ac.in/infrastructure/research-labs/5/), Department of Physics, Cochin University of Science and Technology, India. The standard spectroscopic data were taken from National Institute of Standards and Technology (NIST) [Atomic Spectra Database](https://www.nist.gov/pml/atomic-spectra-database)
