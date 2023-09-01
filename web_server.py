@@ -152,11 +152,53 @@ def home():
     return render_template('home.html', form=form, sess=session['uid'])
 
 
-@app.route('/homed3')
+'''
+@app.route('/homed3', methods=['GET', 'POST'])
 def homed3():
     form = InputForm()
-    return render_template('homed3.html', form=form)
+    if form.validate_on_submit():
+        if form.input_file.data:
+            uploaded_file = form.input_file.data
+            file_name = save_file(uploaded_file)
+            selected_symbols = form.selected_elements.data
+            # selected_names = [element_symbols[symbol] for symbol in selected_symbols]
+            session['recent_file'] = file_name
+            session['log'][file_name] = {
+                'lower_wave': form.lower_wave.data,
+                'upper_wave': form.upper_wave.data,
+                'baseline_intensity': form.baseline_intensity.data,
+                'r_cutoff': form.r_cutoff.data,
+                'l_cutoff': form.l_cutoff.data,
+                'n_peaks': form.n_peaks.data,
+                'selected_elements': selected_symbols,
+                'PS': form.PS.data
+            }
+            comp, log = libs_analysis(filename=file_name,
+                                      element_list=session['log'][file_name]['selected_elements'],
+                                      lower_wavelength_limit=session['log'][file_name]['lower_wave'],
+                                      upper_wavelength_limit=session['log'][file_name]['upper_wave'],
+                                      baseline_intensity=session['log'][file_name]['baseline_intensity'],
+                                      line_type=session['log'][file_name]['PS'],
+                                      lower_error=session['log'][file_name]['l_cutoff'],
+                                      upper_error=session['log'][file_name]['r_cutoff'],
+                                      match_threshold=session['log'][file_name]['n_peaks'])
+            session['log'][file_name]['output'] = comp, log
+            return redirect(url_for('results'))
+        return render_template('homed3.html', form=form, sess=session['uid'])
 
+    if request.method == 'GET':
+        if not 'log' in session:
+            session['log'] = dict()
+        if session.new:
+            session['uid'] = secrets.token_hex(8)
+        elif not session.new:
+            if 'uid' in session:
+                pass
+            else:
+                session['uid'] = secrets.token_hex(8)
+        return render_template('homed3.html', form=form, sess=session['uid'])
+    return render_template('homed3.html', form=form, sess=session['uid'])
+'''
 
 @app.route('/results')
 def results():

@@ -117,13 +117,34 @@
   </section>
 
   <section class="section-3" id = "section-3">
+
     <h2>Element Selector</h2>
+    <div class="periodic-table">
+    <div class="periodic-table-main">
+      <!-- Generate the select options using Flask-WTF -->
+      {% for field in form.selected_elements %}
+        {% if (loop.index in range(1,58)) or (loop.index in range(72,90)) or (loop.index in range(104,119) )%}
+          <div class="element main {{ 'selected' if field.data }} " data-symbol="{{ field.label.text }} " data-id="{{ loop.index }}">{{ field }}</div>
+        {% endif %}
+        {% endfor %}
+        <div class="passive-periodic">
+        {% for field in form.selected_elements %}
+        {% if (loop.index in range(58,72)) or (loop.index in range(90,104))%}
+          <div class="element {{ 'selected' if field.data }} {{ 'act' if loop.index in range(90,104) else 'lanth' }}" data-symbol="{{ field.label.text }} " data-id="{{ loop.index }}">{{ field }}</div>
+        {% endif %}
+      {% endfor %}
+    </div>
+    </div>
+  </div>
+  <div id="form-select-elements" hidden>
     {{form.selected_elements.label}}
     <br>
-    {{form.selected_elements()}}
+    {{form.selected_elements(id = "form-elements")}}
+    <br>
+  </div>
     <br>
     <br>
-    {{form.submit}}
+    {{form.submit(class='submit-btn')}}
   </section>
   
 </form>
@@ -136,10 +157,33 @@
 <script src="https://cdn.plot.ly/plotly-2.25.2.min.js" charset="utf-8"></script>
 <script>
   function clickHandler() {
-    document.getElementById('file').click()
+    document.getElementById('file').click();
   }
   let element = document.getElementById('file_input')
 </script>
 <script src="{{url_for('static', filename='plot.js')}}"></script>
+<script>
+  const elements = document.querySelectorAll('.element');
+  elements.forEach(element => {
+    element.addEventListener('click', () => {
+      element.classList.toggle('selected');
+      console.log(document.getElementById("form-elements").options);
+      var optionsToSelect = element.innerHTML;
+      var select = document.getElementById( 'form-elements' );
+      for ( var i = 0, l = select.options.length; i < l; i++ ){
+        o = select.options[i];
+        if ( optionsToSelect.indexOf( o.text ) != -1 ){
+          if (o.selected){
+            o.selected = false;
+            break;
+          }
+          o.selected= true;
+          break;
+        }
+      }
+    });
+  });
+
+</script>
 
 {% endblock JScript%}

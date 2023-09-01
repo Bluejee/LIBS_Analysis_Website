@@ -9,20 +9,38 @@ body {
 nav {
     background-color: rgb(31, 40, 60);
     color: white;
+    background-image: url('media/libsheader.png');
+    background-size: contain;
+    background: rgb(25, 28, 30);
+    background: -moz-linear-gradient(180deg, rgba(25, 28, 30, 1) 0%, rgba(6, 47, 99, 1) 90%, rgba(5, 41, 84, 1) 100%);
+    background: -webkit-linear-gradient(180deg, rgba(25, 28, 30, 1) 0%, rgba(6, 47, 99, 1) 90%, rgba(5, 41, 84, 1) 100%);
+    background: linear-gradient(180deg, rgba(25, 28, 30, 1) 0%, rgba(6, 47, 99, 1) 90%, rgba(5, 41, 84, 1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#191c1e", endColorstr="#052954", GradientType=1);
+    
+    .navbar-brand {
+        color: wheat;
+        padding-top: 15px;
+        margin: 0px;
+        font-size: 1rem;
+        &:hover{
+            color: aqua;
+        }
+    }
+
 }
 
 .nav-link {
     color: wheat;
     align-items: center;
-    
-    &:hover{
+
+    &:hover {
         color: brown;
         text-decoration: underline;
         text-underline-offset: 6px;
     }
 }
 
-.mynav-items{
+.mynav-items {
     align-self: flex-end;
     justify-self: right;
     margin-left: 40rem;
@@ -103,26 +121,37 @@ nav {
     max-height: 0px;
 }
 
-.periodic-table {
+/* styles.css */
+.periodic-table-main {
+    width: 80rem;
+    height: 30rem;
+    margin-left:5%;
+    margin-top: 2%;
     display: grid;
-    grid-template-columns: repeat(18, 1fr);
-    gap: 5px;
-    margin: 20px auto;
-    width: 80%;
-}
-
-.element {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: #f5f5f5;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    height: 80px;
-    padding: 5px;
-    font-size: 14px;
-}
+    grid-template-columns: repeat(18, 1fr); /* Adjust columns as needed */
+    gap: 10px; /* Adjust gap between elements */
+  }
+  
+  .element {
+    position: relative;
+    width: 50px; /* Adjust element size */
+    height: 50px;
+    background-color: #ccc;
+    border: 1px solid #888;
+    text-align: center;
+    line-height: 50px;
+    font-size: 12px;
+    cursor: pointer;
+    word-break: break-word;
+    text-overflow: ellipsis;
+  }
+  
+  .element.selected {
+    background-color: #3498db; /* Selected color */
+    color: #fff;
+    /* Add any additional styling for the selected state */
+  }
+  
 
 section {
     height: 100vh;
@@ -132,7 +161,13 @@ section {
     background-size: cover;
     background-blend-mode: multiply;
 }
-#secion1{
+.section-3{
+    & h2 {
+        color: white;
+    }
+}
+
+#secion1 {
     height: 92vh;
     width: 98.9vw;
     background: rgb(5, 9, 44);
@@ -148,17 +183,77 @@ section {
     justify-content: center;
     padding: 10rem;
 
-    .start{
-        &:hover{
+    .start {
+        &:hover {
             background-color: green;
             border-radius: 10%;
         }
     }
-    .cite{
+
+    .cite {
         color: white;
         border-color: aqua;
-        &:hover{
+
+        &:hover {
             background-color: aqua;
         }
+    }
+}
+
+#test {
+    width: 1536px;
+    height: 450px;
+}
+
+
+
+.periodic-table {
+    
+    .element[data-id="2"] {
+        grid-column-start: 18;
+    }
+    .element[data-id="5"] {
+        grid-column-start: 13;
+    }
+    .element[data-id="13"] {
+        grid-column-start: 13;
+    }
+    
+}
+.passive-periodic {
+
+    grid-column: 4 / span 13;
+    grid-row: 8;
+    display: grid;     
+    grid-template-columns: repeat(14, 1fr);
+}
+
+.element {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    user-select: none;
+    
+    &:checked {
+        color: red;
+    }
+}
+
+.submit-btn{
+    left: 80%;
+    top: 80%;
+    margin-left: 80%;
+    margin-top: 1.5%;
+    background-color: rgba(0, 51, 102, 1);
+    color: rgba(0, 102, 255, 1);
+    border-radius: 10%;
+    &:hover {
+        color:green;
+        background-color: aquamarine;
+        border:0px;
+        
+    }
+    &:focus {
+        outline: 2px;
     }
 }
