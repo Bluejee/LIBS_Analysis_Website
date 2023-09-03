@@ -5,9 +5,7 @@ import json
 from zipfile import ZipFile
 import numpy as np
 import plotly.graph_objs as go
-import plotly.express as px
 import pandas as pd
-import json
 import plotly.io as pio
 from scipy.signal import find_peaks
 from flask import Flask, request, send_from_directory, render_template, url_for, redirect, session, send_file
@@ -15,13 +13,10 @@ from werkzeug.utils import secure_filename
 from OpenLIBS.analysis import element_list_comparison
 from forms import InputForm, elem_symb
 
-
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '73e2889840a574502969a1ad279ef26f'
 
 UPLOAD_FOLDER = os.path.join(app.root_path, 'session_files')
-
 
 
 def save_file(form_file):
@@ -46,17 +41,17 @@ def save_file(form_file):
 
 def libs_analysis(filename, element_list, lower_wavelength_limit, upper_wavelength_limit, baseline_intensity,
                   line_type='P', lower_error=0.2, upper_error=0.2, match_threshold=3):
-
     data_path = os.path.join(UPLOAD_FOLDER, session['uid'], filename)
+    filename_no_extension, f_ext = os.path.splitext(filename)
     comparison_log_path = os.path.join(
-        UPLOAD_FOLDER, session['uid'], 'output', f"{filename}_Full_comparison.json")
+        UPLOAD_FOLDER, session['uid'], 'output', f"Full_Comparison_{filename_no_extension}.json")
     simulation_log_path = os.path.join(
-        UPLOAD_FOLDER, session['uid'], 'output', f"{filename}_Simulation_Details.log")
+        UPLOAD_FOLDER, session['uid'], 'output', f"Simulation_Details_{filename_no_extension}.log")
 
     data = np.genfromtxt(data_path, delimiter=',')
 
     if line_type:
-        line_type ='P'
+        line_type = 'P'
     else:
         line_type = 'S'
 
@@ -92,7 +87,7 @@ def libs_analysis(filename, element_list, lower_wavelength_limit, upper_waveleng
 
     # Extract the detected element list based on 'is_match' key in the 'out' dictionary
     detected_element_list = [element for element,
-                             result in out.items() if result['is_match']]
+                                         result in out.items() if result['is_match']]
 
     # Write the detected element list to the log file
     with open(simulation_log_path, 'w') as log_file:
@@ -109,100 +104,100 @@ def libs_analysis(filename, element_list, lower_wavelength_limit, upper_waveleng
 
     return comparison_log_path, simulation_log_path
 
-def resultplotter(data_fileloc, log_fileloc, result_fileloc, output_fileloc, annotations = True):
-  
-  data = pd.read_csv(data_fileloc, header=None)
 
-  # First column is 'wavelength' and the second column is 'intensity'
-  data.columns = ['wavelength', 'intensity']
+def resultplotter(data_fileloc, log_fileloc, result_fileloc, output_fileloc, annotations=True):
+    data = pd.read_csv(data_fileloc, header=None)
 
-  # Extract 'wavelength' and 'intensity' values
-  wavelength_data = data['wavelength']
-  intensity_data = data['intensity']
+    # First column is 'wavelength' and the second column is 'intensity'
+    data.columns = ['wavelength', 'intensity']
 
-  # Plotting the input data
-  fig_1 = go.Figure()
-  fig_1.add_trace(go.Scatter(x = wavelength_data, y = intensity_data, mode="lines", name ='Input Data'))
-  fig_1.update_xaxes(title_text='Wavelength')
-  fig_1.update_yaxes(title_text='Intensity')
-  min_intensity = intensity_data.max() * 0.1
+    # Extract 'wavelength' and 'intensity' values
+    wavelength_data = data['wavelength']
+    intensity_data = data['intensity']
 
-  # Read log file and extract lower_wavelength_limit, upper_wavelength_limit and baseline_intensity for plotting
-  infile = rf'{log_fileloc}'
+    # Plotting the input data
+    fig_1 = go.Figure()
+    fig_1.add_trace(go.Scatter(x=wavelength_data, y=intensity_data, mode="lines", name='Input Data'))
+    fig_1.update_xaxes(title_text='Wavelength')
+    fig_1.update_yaxes(title_text='Intensity')
+    min_intensity = intensity_data.max() * 0.1
 
-  graph_parameters = []
-  keep_phrases = ["lower_wavelength_limit :: ", "upper_wavelength_limit :: ", "baseline_intensity :: "]
-  with open(infile) as f:
-    file_csv = f.readlines()
-  for line in file_csv:
-    for phrase in keep_phrases:
-        if phrase in line:
-            graph_parameters.append(line[-6:-1])
-            break
+    # Read log file and extract lower_wavelength_limit, upper_wavelength_limit and baseline_intensity for plotting
+    infile = rf'{log_fileloc}'
 
-  # Opening JSON file
-  with open(result_fileloc, "r") as file_json:
-    # Returns JSON object as a dictionary
-    data = json.load(file_json)
+    graph_parameters = []
+    keep_phrases = ["lower_wavelength_limit :: ", "upper_wavelength_limit :: ", "baseline_intensity :: "]
+    with open(infile) as f:
+        file_csv = f.readlines()
+    for line in file_csv:
+        for phrase in keep_phrases:
+            if phrase in line:
+                graph_parameters.append(line[-6:-1])
+                break
 
-  # Initialisation
-  annotation_arrow_length = -40 # For controlling the annotation arrow length
+    # Opening JSON file
+    with open(result_fileloc, "r") as file_json:
+        # Returns JSON object as a dictionary
+        data = json.load(file_json)
 
-  for key in data:
-    sub_dict = data[key]
-    if sub_dict["is_match"] == True:
-      matched_peaks = sub_dict["matched_peaks"]
-      peak = []
-      standard_wavelength = []
-      intensity = []
-      std_wl = []
-      inten = []
-      inten_modified = []
-      for small_dict in matched_peaks:
-        std_wv = small_dict["Standard_Wavelength"]
-        intensity_1 = small_dict["Intensity"]
-        peak_1 = small_dict["Peak"]
-        standard_wavelength.append(std_wv)
-        intensity.append(intensity_1)
-        peak.append(peak_1)
-      for num in intensity:
-        if num <= min_intensity:
-          inten.append(min_intensity)
-        else:
-          inten.append(num)
-      for number in standard_wavelength:
-        std_wl.append(number)
-        std_wl.append(number)
-        std_wl.append(number)
-      for num in inten:
-        inten_modified.append(0)
-        inten_modified.append(num)
-        inten_modified.append(0)
+    # Initialisation
+    annotation_arrow_length = -40  # For controlling the annotation arrow length
 
-      fig_1.add_trace(go.Scatter(x = std_wl, y = inten_modified, mode="lines", name = key))
-      if annotations:
-        for i in range(len(peak)):
-          fig_1.add_annotation(x = peak[i], y= intensity[i], text = key, showarrow=True, arrowhead=2,arrowsize=1,arrowwidth=1, ay = annotation_arrow_length )
-      annotation_arrow_lenght = annotation_arrow_length - 30
+    for key in data:
+        sub_dict = data[key]
+        if sub_dict["is_match"] == True:
+            matched_peaks = sub_dict["matched_peaks"]
+            peak = []
+            standard_wavelength = []
+            intensity = []
+            std_wl = []
+            inten = []
+            inten_modified = []
+            for small_dict in matched_peaks:
+                std_wv = small_dict["Standard_Wavelength"]
+                intensity_1 = small_dict["Intensity"]
+                peak_1 = small_dict["Peak"]
+                standard_wavelength.append(std_wv)
+                intensity.append(intensity_1)
+                peak.append(peak_1)
+            for num in intensity:
+                if num <= min_intensity:
+                    inten.append(min_intensity)
+                else:
+                    inten.append(num)
+            for number in standard_wavelength:
+                std_wl.append(number)
+                std_wl.append(number)
+                std_wl.append(number)
+            for num in inten:
+                inten_modified.append(0)
+                inten_modified.append(num)
+                inten_modified.append(0)
 
+            fig_1.add_trace(go.Scatter(x=std_wl, y=inten_modified, mode="lines", name=key))
+            if annotations:
+                for i in range(len(peak)):
+                    fig_1.add_annotation(x=peak[i], y=intensity[i], text=key, showarrow=True, arrowhead=2, arrowsize=1,
+                                         arrowwidth=1, ay=annotation_arrow_length)
+            annotation_arrow_lenght = annotation_arrow_length - 30
 
-  fig_1.add_trace(
-    go.Scatter(x=[float(graph_parameters[0]),float(graph_parameters[0]),float(graph_parameters[1]),float(graph_parameters[1]),float(graph_parameters[0])],
-            y=[float(graph_parameters[2]),intensity_data.max()*1.01,intensity_data.max()*1.01,float(graph_parameters[2]),float(graph_parameters[2])],
-            mode='lines',
-            name='Selected Region',
-            line=dict(color="red", width=2, dash = 'dash'),
-            connectgaps=False))
+    fig_1.add_trace(
+        go.Scatter(x=[float(graph_parameters[0]), float(graph_parameters[0]), float(graph_parameters[1]),
+                      float(graph_parameters[1]), float(graph_parameters[0])],
+                   y=[float(graph_parameters[2]), intensity_data.max() * 1.01, intensity_data.max() * 1.01,
+                      float(graph_parameters[2]), float(graph_parameters[2])],
+                   mode='lines',
+                   name='Selected Region',
+                   line=dict(color="red", width=2, dash='dash'),
+                   connectgaps=False))
 
-  
-  fig_1.write_html(output_fileloc)
+    fig_1.write_html(output_fileloc)
 
-  fig_1.update_xaxes(range=[float(graph_parameters[0]), float(graph_parameters[1])])  # Adjust the X-axis range
-  fig_1.update_yaxes(range=[0-(intensity_data.max()*0.01), intensity_data.max()*1.01])
-  fig_1.update_layout(width=800, height=400)
-  div_str = pio.to_html(fig_1, full_html = False)
-  fig_1.update_layout(width=800, height=400)
-  return div_str
+    fig_1.update_xaxes(range=[float(graph_parameters[0]), float(graph_parameters[1])])  # Adjust the X-axis range
+    fig_1.update_yaxes(range=[0 - (intensity_data.max() * 0.01), intensity_data.max() * 1.01])
+    fig_1.update_layout(width=1200, height=600)
+    div_str = pio.to_html(fig_1, full_html=False)
+    return div_str
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -252,68 +247,30 @@ def home():
     return render_template('home.html', form=form, sess=session['uid'])
 
 
-'''
-@app.route('/homed3', methods=['GET', 'POST'])
-def homed3():
-    form = InputForm()
-    if form.validate_on_submit():
-        if form.input_file.data:
-            uploaded_file = form.input_file.data
-            file_name = save_file(uploaded_file)
-            selected_symbols = form.selected_elements.data
-            # selected_names = [element_symbols[symbol] for symbol in selected_symbols]
-            session['recent_file'] = file_name
-            session['log'][file_name] = {
-                'lower_wave': form.lower_wave.data,
-                'upper_wave': form.upper_wave.data,
-                'baseline_intensity': form.baseline_intensity.data,
-                'r_cutoff': form.r_cutoff.data,
-                'l_cutoff': form.l_cutoff.data,
-                'n_peaks': form.n_peaks.data,
-                'selected_elements': selected_symbols,
-                'PS': form.PS.data
-            }
-            comp, log = libs_analysis(filename=file_name,
-                                      element_list=session['log'][file_name]['selected_elements'],
-                                      lower_wavelength_limit=session['log'][file_name]['lower_wave'],
-                                      upper_wavelength_limit=session['log'][file_name]['upper_wave'],
-                                      baseline_intensity=session['log'][file_name]['baseline_intensity'],
-                                      line_type=session['log'][file_name]['PS'],
-                                      lower_error=session['log'][file_name]['l_cutoff'],
-                                      upper_error=session['log'][file_name]['r_cutoff'],
-                                      match_threshold=session['log'][file_name]['n_peaks'])
-            session['log'][file_name]['output'] = comp, log
-            return redirect(url_for('results'))
-        return render_template('homed3.html', form=form, sess=session['uid'])
-
-    if request.method == 'GET':
-        if not 'log' in session:
-            session['log'] = dict()
-        if session.new:
-            session['uid'] = secrets.token_hex(8)
-        elif not session.new:
-            if 'uid' in session:
-                pass
-            else:
-                session['uid'] = secrets.token_hex(8)
-        return render_template('homed3.html', form=form, sess=session['uid'])
-    return render_template('homed3.html', form=form, sess=session['uid'])
-'''
-
 @app.route('/results')
 def results():
     filename = session['recent_file']
+    filename_no_extension, f_ext = os.path.splitext(filename)
     comparison_log_path = os.path.join(
-        UPLOAD_FOLDER, session['uid'], 'output', f"{filename}_Full_comparison.json")
+        UPLOAD_FOLDER, session['uid'], 'output', f"Full_Comparison_{filename_no_extension}.json")
     simulation_log_path = os.path.join(
-        UPLOAD_FOLDER, session['uid'], 'output', f"{filename}_Simulation_Details.log")
+        UPLOAD_FOLDER, session['uid'], 'output', f"Simulation_Details_{filename_no_extension}.log")
+    input_data_path = os.path.join(
+        UPLOAD_FOLDER, session['uid'], f"{filename}")
+    result_html_path = os.path.join(
+        UPLOAD_FOLDER, session['uid'], 'output', f"Results_{filename_no_extension}.html")
+
     with open(comparison_log_path, 'r') as f:
         json_output = f.read()
-    output ={
-            'comp':comparison_log_path,
-            'log': simulation_log_path,
-            'data': json_output
-        }
+
+    plotly_div = resultplotter(data_fileloc=input_data_path, log_fileloc=simulation_log_path,
+                               result_fileloc=comparison_log_path, output_fileloc=result_html_path, annotations=False)
+    output = {
+        'comp': comparison_log_path,
+        'log': simulation_log_path,
+        'plotly_div': plotly_div,
+        'data': json_output
+    }
     return render_template('results.html', output=output)
 
 
@@ -330,16 +287,27 @@ def about():
 @app.route('/download')
 def download_file():
     filename = session['recent_file']
+    filename_no_extension, f_ext = os.path.splitext(filename)
     comparison_log_path = os.path.join(
-        UPLOAD_FOLDER, session['uid'], 'output', f"{filename}_Full_comparison.json")
+        UPLOAD_FOLDER, session['uid'], 'output', f"Full_Comparison_{filename_no_extension}.json")
     simulation_log_path = os.path.join(
-        UPLOAD_FOLDER, session['uid'], 'output', f"{filename}_Simulation_Details.log")
+        UPLOAD_FOLDER, session['uid'], 'output', f"Simulation_Details_{filename_no_extension}.log")
+    input_data_path = os.path.join(
+        UPLOAD_FOLDER, session['uid'], f"{filename}")
+    result_html_path = os.path.join(
+        UPLOAD_FOLDER, session['uid'], 'output', f"Results_{filename_no_extension}.html")
+
     zip_path = os.path.join(
-        UPLOAD_FOLDER, session['uid'], 'output', f"{filename}_output.zip")
+        UPLOAD_FOLDER, session['uid'], 'output', f"{filename_no_extension}_output.zip")
+
     with ZipFile(zip_path, 'w') as zf:
         zf.write(comparison_log_path, os.path.basename(comparison_log_path))
         zf.write(simulation_log_path, os.path.basename(simulation_log_path))
-    return send_file(zip_path, as_attachment = True)
+        zf.write(input_data_path, os.path.basename(input_data_path))
+        zf.write(result_html_path, os.path.basename(result_html_path))
+
+    return send_file(zip_path, as_attachment=True)
+
 
 if __name__ == '__main__':
     if not os.path.isdir(UPLOAD_FOLDER):

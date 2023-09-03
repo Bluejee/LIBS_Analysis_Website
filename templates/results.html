@@ -2,6 +2,7 @@
 {% block content%}
     {% if output %}
         <a href="/download"><button class='btn btn-info'>Download</button></a> <br>
+        {{ output.plotly_div | safe}}
     {% endif %}
 {% endblock content%}
 
