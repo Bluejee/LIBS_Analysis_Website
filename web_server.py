@@ -4,6 +4,11 @@ import secrets
 import json
 from zipfile import ZipFile
 import numpy as np
+import plotly.graph_objs as go
+import plotly.express as px
+import pandas as pd
+import json
+import plotly.io as pio
 from scipy.signal import find_peaks
 from flask import Flask, request, send_from_directory, render_template, url_for, redirect, session, send_file
 from werkzeug.utils import secure_filename
@@ -103,6 +108,101 @@ def libs_analysis(filename, element_list, lower_wavelength_limit, upper_waveleng
         log_file.write(f'Detected Elements :: {detected_element_list}\n')
 
     return comparison_log_path, simulation_log_path
+
+def resultplotter(data_fileloc, log_fileloc, result_fileloc, output_fileloc, annotations = True):
+  
+  data = pd.read_csv(data_fileloc, header=None)
+
+  # First column is 'wavelength' and the second column is 'intensity'
+  data.columns = ['wavelength', 'intensity']
+
+  # Extract 'wavelength' and 'intensity' values
+  wavelength_data = data['wavelength']
+  intensity_data = data['intensity']
+
+  # Plotting the input data
+  fig_1 = go.Figure()
+  fig_1.add_trace(go.Scatter(x = wavelength_data, y = intensity_data, mode="lines", name ='Input Data'))
+  fig_1.update_xaxes(title_text='Wavelength')
+  fig_1.update_yaxes(title_text='Intensity')
+  min_intensity = intensity_data.max() * 0.1
+
+  # Read log file and extract lower_wavelength_limit, upper_wavelength_limit and baseline_intensity for plotting
+  infile = rf'{log_fileloc}'
+
+  graph_parameters = []
+  keep_phrases = ["lower_wavelength_limit :: ", "upper_wavelength_limit :: ", "baseline_intensity :: "]
+  with open(infile) as f:
+    file_csv = f.readlines()
+  for line in file_csv:
+    for phrase in keep_phrases:
+        if phrase in line:
+            graph_parameters.append(line[-6:-1])
+            break
+
+  # Opening JSON file
+  with open(result_fileloc, "r") as file_json:
+    # Returns JSON object as a dictionary
+    data = json.load(file_json)
+
+  # Initialisation
+  annotation_arrow_length = -40 # For controlling the annotation arrow length
+
+  for key in data:
+    sub_dict = data[key]
+    if sub_dict["is_match"] == True:
+      matched_peaks = sub_dict["matched_peaks"]
+      peak = []
+      standard_wavelength = []
+      intensity = []
+      std_wl = []
+      inten = []
+      inten_modified = []
+      for small_dict in matched_peaks:
+        std_wv = small_dict["Standard_Wavelength"]
+        intensity_1 = small_dict["Intensity"]
+        peak_1 = small_dict["Peak"]
+        standard_wavelength.append(std_wv)
+        intensity.append(intensity_1)
+        peak.append(peak_1)
+      for num in intensity:
+        if num <= min_intensity:
+          inten.append(min_intensity)
+        else:
+          inten.append(num)
+      for number in standard_wavelength:
+        std_wl.append(number)
+        std_wl.append(number)
+        std_wl.append(number)
+      for num in inten:
+        inten_modified.append(0)
+        inten_modified.append(num)
+        inten_modified.append(0)
+
+      fig_1.add_trace(go.Scatter(x = std_wl, y = inten_modified, mode="lines", name = key))
+      if annotations:
+        for i in range(len(peak)):
+          fig_1.add_annotation(x = peak[i], y= intensity[i], text = key, showarrow=True, arrowhead=2,arrowsize=1,arrowwidth=1, ay = annotation_arrow_length )
+      annotation_arrow_lenght = annotation_arrow_length - 30
+
+
+  fig_1.add_trace(
+    go.Scatter(x=[float(graph_parameters[0]),float(graph_parameters[0]),float(graph_parameters[1]),float(graph_parameters[1]),float(graph_parameters[0])],
+            y=[float(graph_parameters[2]),intensity_data.max()*1.01,intensity_data.max()*1.01,float(graph_parameters[2]),float(graph_parameters[2])],
+            mode='lines',
+            name='Selected Region',
+            line=dict(color="red", width=2, dash = 'dash'),
+            connectgaps=False))
+
+  
+  fig_1.write_html(output_fileloc)
+
+  fig_1.update_xaxes(range=[float(graph_parameters[0]), float(graph_parameters[1])])  # Adjust the X-axis range
+  fig_1.update_yaxes(range=[0-(intensity_data.max()*0.01), intensity_data.max()*1.01])
+  fig_1.update_layout(width=800, height=400)
+  div_str = pio.to_html(fig_1, full_html = False)
+  fig_1.update_layout(width=800, height=400)
+  return div_str
 
 
 @app.route('/', methods=['GET', 'POST'])
