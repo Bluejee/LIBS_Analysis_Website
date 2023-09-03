@@ -15,39 +15,8 @@
 <section id="section-2" class="section-2">
 <form action="/" method="POST" enctype=multipart/form-data >
   {{form.hidden_tag()}}
-  {{form.lower_wave.label()}}
-  {{form.lower_wave}} <br>
-  {% if form.lower_wave.errors %}
-          <div class="invalid-feedback">
-            {% for error in form.lower_wave.errors %}
-                <span>{{ error }}</span>
-            {% endfor %}
-          </div> 
-          <br><br>                               
-  {% endif %}
 
-  {{form.upper_wave.label()}}
-  {{form.upper_wave}} <br>
-  {% if form.upper_wave.errors %}
-          <div class="invalid-feedback">
-            {% for error in form.upper_wave.errors %}
-                <span>{{ error }}</span>
-            {% endfor %}
-          </div>
-          <br><br>                                    
-  {% endif %}
-
-  {{form.baseline_intensity.label()}}
-  {{form.baseline_intensity}} <br>
-  {% if form.baseline_intensity.errors %}
-          <div class="invalid-feedback">
-            {% for error in form.baseline_intensity.errors %}
-                <span>{{ error }}</span>
-            {% endfor %}
-            </div>
-            <br><br>          
-  {% endif %}
-
+ 
   <span class="anchor" id="s_section-3"></span>
     <div class="d-flex flex-column s2">
       <div class="p-0">
@@ -58,67 +27,97 @@
           Spectral Data</button>
       </div>
       <div class="p-0">
-        <div class="graphc"><div id="graphContainer"></div></div>
+        <div class="graphc">
+          <div id="graphContainer"></div>
+          <div class="parameters-page1">
+            {{form.lower_wave(placeholder=form.lower_wave.label.text)}}
+            {% if form.lower_wave.errors %}
+                    <div class="invalid-feedback">
+                      {% for error in form.lower_wave.errors %}
+                          <span>{{ error }}</span>
+                      {% endfor %}
+                    </div> 
+                    <br><br>                               
+            {% endif %}
+        
+            <img src="{{url_for('static', filename='assets/lambda_l.svg')}}" alt="">
+          {{form.upper_wave(placeholder=form.upper_wave.label.text)}}
+          {% if form.upper_wave.errors %}
+                  <div class="invalid-feedback">
+                    {% for error in form.upper_wave.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                  </div>
+                  <br><br>                   
+          {% endif %}
+          <img src="{{url_for('static', filename='assets/lambda_r.svg')}}" alt="">
+          {{form.baseline_intensity(placeholder=form.baseline_intensity.label.text)}}
+          {% if form.baseline_intensity.errors %}
+                  <div class="invalid-feedback">
+                    {% for error in form.baseline_intensity.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                    </div>
+                    <br><br>          
+          {% endif %}
+          <img src="{{url_for('static', filename='assets/threshold_2.svg')}}" alt="">
+        </div>
+        </div>
       </div>
-      <div id="test"></div>
-      <div class="p-0">
-        <button type= 'button' class="btn btn-lg section-2-btn-next" style="color: #000000 ;">NEXT</button>
+      <div class="p-0" >
+        <button type="button" class="btn btn-lg section-2-btn-next"> <a style="text-decoration: none;" href="#section-3">NEXT</a></button>
       </div>
         
     </div>
   </section>
 
-  
-  <section class="section-2" id = "section-2">
-    
-    {{form.r_cutoff.label()}}
-    {{form.r_cutoff}} <br>
+
+
+  <section class="section-3" id = "section-3">
+    <h2>Element Selector</h2>
+    <div class="parameter-page2">
+    <div class="cutoff">
+    {{form.l_cutoff(class='left-cutoff',placeholder=form.l_cutoff.label.text)}}
+    {% if form.l_cutoff.errors %}
+          <div class="invalid-feedback">
+            {% for error in form.l_cutoff.errors %}
+                <span>{{ error }}</span>
+            {% endfor %}
+          </div>
+    {% endif %}
+    <img src="{{ url_for('static', filename='assets/errorlimits.svg') }}" alt="">
+    {{form.r_cutoff(class='right-cutoff', placeholder=form.r_cutoff.label.text )}}
     {% if form.r_cutoff.errors %}
           <div class="invalid-feedback">
             {% for error in form.r_cutoff.errors %}
                 <span>{{ error }}</span>
             {% endfor %}
-          </div>
-          <br><br>             
+          </div>             
     {% endif %}
-
-    {{form.l_cutoff.label()}}
-    {{form.l_cutoff}} <br>
-    {% if form.l_cutoff.errors %}
-          <div class="invalid-feedback">
-            err
-            {% for error in form.l_cutoff.errors %}
-                <span>{{ error }}</span>
-            {% endfor %}
-          </div>
-          <br><br>   
-    {% endif %}
-
-    {{form.n_peaks.label()}}
-    {{form.n_peaks}} <br>
+  </div>
+  <div class="n_peaks">
+    <img src="{{ url_for('static', filename='assets/npeaks.svg') }}" alt="icon for no. of peaks">
+    {{form.n_peaks(class='npeaks',placeholder = form.n_peaks.label.text)}} <br>
     {% if form.n_peaks.errors %}
           <div class="invalid-feedback">
             {% for error in form.n_peaks.errors %}
                 <span>{{ error }}</span>
             {% endfor %}
-          </div>
-          <br><br>                        
+          </div>          
     {% endif %}
+  </div>
   
+    <div class="pors">
     <span>Search for Persistant</span> {{form.PS}}
     {% if form.PS.errors %}
           <div class="invalid-feedback">
             {% for error in form.PS.errors %}
                 <span>{{ error }}</span>
             {% endfor %}
-          </div>
-          <br><br>                        
+          </div>                  
     {% endif %}
-  </section>
-
-  <section class="section-3" id = "section-3">
-
-    <h2>Element Selector</h2>
+  </div>
+  </div>
     <div class="periodic-table">
     <div class="periodic-table-main">
       <!-- Generate the select options using Flask-WTF -->

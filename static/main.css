@@ -83,7 +83,7 @@ nav {
 }
 
 .section-2-btn-next {
-
+    color: #000000;
     margin-top: 0rem;
     margin-left: 50rem;
     border-radius: 5rem;
@@ -92,17 +92,36 @@ nav {
     width: 12rem;
     height: 3rem;
     justify-content: center;
+
+    & a {
+        all:none;
+    }
 }
 
-.graphContainer {
-    width: 80rem;
-    height: 35rem;
-    margin-left: 10%;
-    margin-bottom: 0px;
+.graphc{
+    margin-left: 8%;
+    margin-right: 8%;
+    margin-top: 0%;
+
     border-radius: 5rem;
-    width: 100%;
-    max-width: 600px;
-    height: 500px;
+    /* width: 75rem; */
+    height: 30rem;
+    outline: cyan;
+    border: 2px solid #00A4BD;
+    background-color: maroon;
+    display: grid;
+    grid-template-columns: 80% 20%;
+}
+
+#graphContainer {
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-top: 2.5rem;
+    border-radius: 5rem;
+    /* width: 75rem; */
+    height: 25rem;
+    border: 10px solid #2196F3;
+
 }
 
 #form_file_input {
@@ -200,12 +219,6 @@ section {
     }
 }
 
-#test {
-    width: 1536px;
-    height: 450px;
-}
-
-
 
 .periodic-table {
     
@@ -256,4 +269,165 @@ section {
     &:focus {
         outline: 2px;
     }
+}
+.parameters-page1{
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    grid-column-gap: 0cap;
+
+    & input {
+        width: 10rem;
+        justify-self: right;
+        margin-top: 5rem;
+        margin-bottom: 2rem;
+        align-self: center;
+        
+    }
+
+
+    & img {
+        width: 3rem;
+        height: 3.2rem;
+        border: 1px solid #fff;
+        border-radius : 2rem;
+        justify-self: center;
+        align-self: center;
+        
+    }
+}
+
+.parameter-page2{
+    color:white;
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    margin-left: 20%;
+    margin-right: 20%;
+
+    & img{
+        width: 3rem;
+        height: 3.2rem;
+        background-color: white;
+        justify-content: center;
+        align-self: center;
+        margin :0px;
+        gap:0px;
+        padding: 0%;
+        margin-top: -.35rem;
+        border-bottom: 1px solid black;
+        border-top: 1px solid black;
+    }
+
+    & input {
+        height:3.25rem;
+        width:7rem;
+        border-radius: 15rem;
+        justify-content:center ;
+        padding:0%;
+        margin:0%;
+
+        &::placeholder {
+            text-align: center;
+        }
+    }
+
+    .cutoff {
+        grid-column: 1;
+        display: grid;
+        grid-template-columns: .4fr .2fr .4fr;
+        column-gap: 0px;
+        padding: 0px;
+    }
+
+    .left-cutoff {
+        border-radius:15rem 0rem 0rem 15rem;
+        justify-content:right;
+        grid-column: 1;
+        
+        border-right: 5px solid white;
+        border-left: 5px solid black;
+        border-bottom: 5px solid black;
+        border-top: 5px solid black;
+        margin-left: .7rem;
+        display: inline;
+    }
+
+    .right-cutoff {
+        border-left: 5px solid white;
+        border-right: 5px solid black;
+        border-bottom: 5px solid black;
+        border-top: 5px solid black;
+
+        border-radius:0rem 15rem 15rem 0rem;
+        justify-content:left;
+        margin-left: 0;
+        padding:0px;
+        grid-column: 3;
+        margin-left: 0rem;
+        
+    }
+
+
+    .pors {
+        grid-column: 3;
+        justify-content: center;
+
+        display: grid;
+        grid-template-areas: 'a b';
+
+        & input[type='checkbox'] {
+            width: 2rem;
+            grid-area: b;
+
+
+        }
+
+        & span {
+            grid-area: a;
+            justify-self: center;
+            align-self: center;
+            text-align: center;
+            margin-right: 10px;
+        }
+    }
+    .n_peaks{
+        grid-column: 2;
+        
+
+       
+
+        & img {
+            margin: 0rem;
+            width: 3rem;
+            height: 3.2rem;
+            border-radius:15rem 0rem 0rem 15rem;
+            border-bottom: 1px solid black;
+            border-top: 3px solid black;
+            
+        }
+                
+
+    }
+
+    #n_peaks {        
+        border-left: 5px solid white;
+        
+        border-right: 5px solid black;
+        border-bottom: 5px solid black;
+        border-top: 5px solid black;
+        border-radius:0rem 15rem 15rem 0rem;
+
+        justify-content:left;
+        margin-left: 0;
+        padding:0px;
+        grid-column: 3;
+        margin-left: -.25rem;
+    }
+    /* & img {
+        position:absolute;
+        top: 2px;
+    } */
+
+    
+    
 }

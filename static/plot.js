@@ -59,7 +59,7 @@ function plotGraph() {
                     }
                 }
             };
-            drawChart("test", trace1, layout);
+            drawChart("graphContainer", trace1, layout);
         };
         reader.readAsText(file);
 
