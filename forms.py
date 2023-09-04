@@ -38,6 +38,6 @@ class InputForm(FlaskForm):
     l_cutoff = FloatField('left cutoff',validators = [DataRequired()])
     n_peaks = IntegerField('no. of peaks to match',validators = [DataRequired()])
     selected_elements = SelectMultipleField('Select Elements',
-                                             choices=[(sym,elem) for sym,elem in elem_symb.items()])
+                                             choices=[(sym,elem) for sym,elem in elem_symb.items()] )
     PS = BooleanField('P')
     submit = SubmitField('Submit')

@@ -1,3 +1,9 @@
+:root {
+    --elem_size_width:70px;
+    --elem_size_height:60px;
+}
+
+
 .btn-color {
     background-color: rgb(152, 33, 118);
 }
@@ -108,19 +114,19 @@ nav {
     height: 30rem;
     outline: cyan;
     border: 2px solid #00A4BD;
-    background-color: maroon;
+    background-color: black;
     display: grid;
     grid-template-columns: 80% 20%;
 }
 
 #graphContainer {
-    margin-left: 10%;
+    margin-left: 5%;
     margin-right: 10%;
     margin-top: 2.5rem;
-    border-radius: 5rem;
+    /* border-radius: 5rem; */
     /* width: 75rem; */
     height: 25rem;
-    border: 10px solid #2196F3;
+    border: 4px solid #2196F3;
 
 }
 
@@ -144,17 +150,23 @@ nav {
 .periodic-table-main {
     width: 80rem;
     height: 30rem;
-    margin-left:5%;
+    margin-left:6%; 
     margin-top: 2%;
     display: grid;
     grid-template-columns: repeat(18, 1fr); /* Adjust columns as needed */
-    gap: 10px; /* Adjust gap between elements */
+    gap: 1px; /* Adjust gap between elements */
+    column-gap: 5px;
+    width: calc(18*var(--elem_size_width ));
+    justify-self: center;
+    align-self: center;
+    place-self: center;
+    
   }
   
   .element {
     position: relative;
-    width: 50px; /* Adjust element size */
-    height: 50px;
+    width: var(--elem_size_width); /* Adjust element size */
+    height: var(--elem_size_height);
     background-color: #ccc;
     border: 1px solid #888;
     text-align: center;
@@ -163,6 +175,10 @@ nav {
     cursor: pointer;
     word-break: break-word;
     text-overflow: ellipsis;
+    margin:0px;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
   }
   
   .element.selected {
@@ -225,6 +241,9 @@ section {
     .element[data-id="2"] {
         grid-column-start: 18;
     }
+    .element[data-id="1"] {
+        grid-column-start: 1;
+    }
     .element[data-id="5"] {
         grid-column-start: 13;
     }
@@ -234,7 +253,7 @@ section {
     
 }
 .passive-periodic {
-
+    margin-top: 1%;
     grid-column: 4 / span 13;
     grid-row: 8;
     display: grid;     
@@ -252,24 +271,7 @@ section {
     }
 }
 
-.submit-btn{
-    left: 80%;
-    top: 80%;
-    margin-left: 80%;
-    margin-top: 1.5%;
-    background-color: rgba(0, 51, 102, 1);
-    color: rgba(0, 102, 255, 1);
-    border-radius: 10%;
-    &:hover {
-        color:green;
-        background-color: aquamarine;
-        border:0px;
-        
-    }
-    &:focus {
-        outline: 2px;
-    }
-}
+
 .parameters-page1{
     display: grid;
     grid-template-columns: repeat(2,1fr);
@@ -292,6 +294,7 @@ section {
         border-radius : 2rem;
         justify-self: center;
         align-self: center;
+        background-color: lightblue;
         
     }
 }
@@ -299,21 +302,22 @@ section {
 .parameter-page2{
     color:white;
     position: relative;
+    grid-column: 3 /  span 9;
+    grid-row: 1 / span 1;
     display: grid;
     grid-template-columns: repeat(3,1fr);
-    margin-left: 20%;
-    margin-right: 20%;
+    /* margin-left: 20%; */
+    /* margin-right: 20%; */
 
     & img{
         width: 3rem;
         height: 3.2rem;
         background-color: white;
         justify-content: center;
-        align-self: center;
         margin :0px;
         gap:0px;
         padding: 0%;
-        margin-top: -.35rem;
+        /* margin-top: -.35rem; */
         border-bottom: 1px solid black;
         border-top: 1px solid black;
     }
@@ -386,7 +390,7 @@ section {
             grid-area: a;
             justify-self: center;
             align-self: center;
-            text-align: center;
+            line-height: normal;
             margin-right: 10px;
         }
     }
@@ -398,6 +402,7 @@ section {
 
         & img {
             margin: 0rem;
+            margin-left: 2px;
             width: 3rem;
             height: 3.2rem;
             border-radius:15rem 0rem 0rem 15rem;
@@ -427,7 +432,22 @@ section {
         position:absolute;
         top: 2px;
     } */
-
-    
-    
+}
+.submit-btn{
+    left: 80%;
+    top: 80%;
+    margin-left: 85%;
+    margin-top: 4.5%;
+    background-color: rgba(0, 51, 102, 1);
+    color: rgba(0, 102, 255, 1);
+    border-radius: 10%;
+    &:hover {
+        color:green;
+        background-color: aquamarine;
+        border:0px;
+        
+    }
+    &:focus {
+        outline: 2px;
+    }
 }

@@ -5,10 +5,10 @@ import json
 from zipfile import ZipFile
 import numpy as np
 import plotly.graph_objs as go
-import pandas as pd
 import plotly.io as pio
+import pandas as pd
 from scipy.signal import find_peaks
-from flask import Flask, request, send_from_directory, render_template, url_for, redirect, session, send_file
+from flask import Flask, request, render_template, url_for, redirect, session, send_file
 from werkzeug.utils import secure_filename
 from OpenLIBS.analysis import element_list_comparison
 from forms import InputForm, elem_symb
@@ -207,8 +207,8 @@ def home():
         if form.input_file.data:
             uploaded_file = form.input_file.data
             file_name = save_file(uploaded_file)
-            selected_symbols = form.selected_elements.data
-            # selected_names = [element_symbols[symbol] for symbol in selected_symbols]
+            selected_symbol = form.selected_elements.data
+            # selected_symbol = [elem_symb[ list(elem_symb.values()).index(symbol) ] for symbol in selected_names]
             session['recent_file'] = file_name
             session['log'][file_name] = {
                 'lower_wave': form.lower_wave.data,
@@ -217,7 +217,7 @@ def home():
                 'r_cutoff': form.r_cutoff.data,
                 'l_cutoff': form.l_cutoff.data,
                 'n_peaks': form.n_peaks.data,
-                'selected_elements': selected_symbols,
+                'selected_elements': selected_symbol,
                 'PS': form.PS.data
             }
             comp, log = libs_analysis(filename=file_name,
