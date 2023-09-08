@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content%}
 <main class="mt-0 mb-0">
-  <section class="main-section-1" id="secion1">
+  <section class="main-section-1" id="section1">
     <div class="pt-4">
       <h1 style="font-size:5vw" class="text-center text-light fw-bolder">LIBS ANALYZER</h1>
     </div>
@@ -20,17 +20,18 @@
   <span class="anchor" id="s_section-3"></span>
     <div class="d-flex flex-column s2">
       <div class="p-0">
-        {{form.input_file(id = 'file',onchange="plotGraph()")}}
         
+        {{form.input_file(id = 'file',onchange="plotGraph()")}}
+        <div class="input_and_filename">        
         <button type ="button" id="file_input" onclick="clickHandler()" 
-        class="btn btn-lg section-2-btn" style="color: #000000 ;">Input
-          Spectral Data</button>
+        class="btn section-2-btn">Input
+          Spectral Data </button> <div id="filetext"> filename </div></div>
       </div>
       <div class="p-0">
         <div class="graphc">
           <div id="graphContainer"></div>
           <div class="parameters-page1">
-            {{form.lower_wave(placeholder=form.lower_wave.label.text)}}
+            {{form.lower_wave(placeholder=form.lower_wave.label.text, title=form.lower_wave.label.text)}}
             {% if form.lower_wave.errors %}
                     <div class="invalid-feedback">
                       {% for error in form.lower_wave.errors %}
@@ -40,8 +41,8 @@
                     <br><br>                               
             {% endif %}
         
-            <img src="{{url_for('static', filename='assets/lambda_l.svg')}}" alt="">
-          {{form.upper_wave(placeholder=form.upper_wave.label.text)}}
+            <img src="{{url_for('static', filename='assets/lambda_l_blue.svg')}}" alt="">
+          {{form.upper_wave(placeholder=form.upper_wave.label.text, title =form.upper_wave.label.text )}}
           {% if form.upper_wave.errors %}
                   <div class="invalid-feedback">
                     {% for error in form.upper_wave.errors %}
@@ -50,8 +51,8 @@
                   </div>
                   <br><br>                   
           {% endif %}
-          <img src="{{url_for('static', filename='assets/lambda_r.svg')}}" alt="">
-          {{form.baseline_intensity(placeholder=form.baseline_intensity.label.text)}}
+          <img src="{{url_for('static', filename='assets/lambda_r_blue.svg')}}" alt="">
+          {{form.baseline_intensity(placeholder=form.baseline_intensity.label.text, title= form.baseline_intensity.label.text)}}
           {% if form.baseline_intensity.errors %}
                   <div class="invalid-feedback">
                     {% for error in form.baseline_intensity.errors %}
@@ -60,12 +61,12 @@
                     </div>
                     <br><br>          
           {% endif %}
-          <img src="{{url_for('static', filename='assets/threshold_2.svg')}}" alt="">
+          <img src="{{url_for('static', filename='assets/threshold_blue.svg')}}" alt="">
         </div>
         </div>
       </div>
       <div class="p-0" >
-        <button type="button"  onclick="document.getElementById('section-3').scrollIntoView()"  class="btn btn-lg section-2-btn-next"> <a style="text-decoration: none;" href="#section-3">NEXT</a></button>
+        <button type="button"  onclick="document.getElementById('section-3').scrollIntoView()"  class="btn btn-lg section-2-btn-next">NEXT</button>
       </div>
         
     </div>
@@ -81,7 +82,7 @@
     <div class="periodic-table-main">
       <div class="parameter-page2">
         <div class="cutoff">
-          {{form.l_cutoff(class='left-cutoff',placeholder=form.l_cutoff.label.text)}}
+          {{form.l_cutoff(class='left-cutoff',placeholder=form.l_cutoff.label.text, title=form.l_cutoff.label.text)}}
           {% if form.l_cutoff.errors %}
                 <div class="invalid-feedback">
                   {% for error in form.l_cutoff.errors %}
@@ -89,8 +90,8 @@
                   {% endfor %}
                 </div>
           {% endif %}
-          <img src="{{ url_for('static', filename='assets/errorlimits.svg') }}" alt="">
-          {{form.r_cutoff(class='right-cutoff', placeholder=form.r_cutoff.label.text )}}
+          <img src="{{ url_for('static', filename='assets/lambda_error_blue.svg') }}" alt="Tolerance" title="Tolerance">
+          {{form.r_cutoff(class='right-cutoff', placeholder=form.r_cutoff.label.text , title=form.r_cutoff.label.text)}}
           {% if form.r_cutoff.errors %}
                 <div class="invalid-feedback">
                   {% for error in form.r_cutoff.errors %}
@@ -100,8 +101,8 @@
           {% endif %}
         </div>
       <div class="n_peaks">
-        <img src="{{ url_for('static', filename='assets/npeaks.svg') }}" alt="icon for no. of peaks">
-        {{form.n_peaks(class='npeaks',placeholder = form.n_peaks.label.text)}} <br>
+        <img src="{{ url_for('static', filename='assets/npeaks_blue.svg') }}" alt="icon for no. of peaks">
+        {{form.n_peaks(class='npeaks',placeholder = form.n_peaks.label.text , title=form.n_peaks.label.text)}} <br>
         {% if form.n_peaks.errors %}
               <div class="invalid-feedback">
                 {% for error in form.n_peaks.errors %}
@@ -112,7 +113,7 @@
       </div>
       
       <div class="pors">
-        <span>Search for Persistant</span> {{form.PS}}
+        <span>Search Persistant only</span> {{form.PS}}
         {% if form.PS.errors %}
               <div class="invalid-feedback">
                 {% for error in form.PS.errors %}
@@ -125,13 +126,13 @@
       <!-- Generate the select options using Flask-WTF -->
       {% for field in form.selected_elements %}
         {% if (loop.index in range(1,58)) or (loop.index in range(72,90)) or (loop.index in range(104,119) )%}
-          <div class="element main {{ 'selected' if field.data }} " data-symbol="{{ field.label.text }}" data-id="{{ loop.index }}">{{ field(class='select-entries') }}</div>
+          <div class="element main {{ 'selected' if field.data }} " data-symbol="{{ field.label.text }}" data-id="{{ loop.index }}"><abbr title="{{ field.label.text }}">{{ field(class='select-entries') }}</abbr></div>
         {% endif %}
         {% endfor %}
         <div class="passive-periodic">
         {% for field in form.selected_elements %}
         {% if (loop.index in range(58,72)) or (loop.index in range(90,104))%}
-          <div class="element {{ 'selected' if field.data }} {{ 'act' if loop.index in range(90,104) else 'lanth' }}" data-symbol="{{ field.label.text }} " data-id="{{ loop.index }}">{{ field(class='select-entries') }}</div>
+          <div class="element {{ 'selected' if field.data }} {{ 'act' if loop.index in range(90,104) else 'lanth' }}" data-symbol="{{ field.label.text }} " data-id="{{ loop.index }}"><abbr title="{{ field.label.text }}">{{ field(class='select-entries') }}</abbr></div>
         {% endif %}
       {% endfor %}
     </div>
@@ -157,7 +158,7 @@
 <script>
   const element = Array.from(document.getElementsByClassName('select-entries'));
   element.forEach(
-    entries =>{console.log(entries.value);
+    entries =>{
     entries.innerHTML = entries.value;
     }
   );

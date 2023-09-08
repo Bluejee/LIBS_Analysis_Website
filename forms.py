@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import IntegerField, FloatField, SubmitField, BooleanField, SelectMultipleField
-from wtforms.validators import DataRequired
+from wtforms.validators import InputRequired
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 
 elem_symb = {
@@ -31,12 +31,12 @@ elem_symb = {
 
 class InputForm(FlaskForm):
     input_file = FileField('Data File',validators = [FileRequired(),FileAllowed(['csv'])])
-    lower_wave = FloatField('lower wavelength',validators = [DataRequired()])
-    upper_wave = FloatField('upper wavelength', validators = [DataRequired()])
-    baseline_intensity = FloatField('baseline_intensity',validators = [DataRequired()])
-    r_cutoff = FloatField('right cutoff',validators = [DataRequired()])
-    l_cutoff = FloatField('left cutoff',validators = [DataRequired()])
-    n_peaks = IntegerField('no. of peaks to match',validators = [DataRequired()])
+    lower_wave = FloatField('lower wavelength',validators = [InputRequired()])
+    upper_wave = FloatField('upper wavelength', validators = [InputRequired()])
+    baseline_intensity = FloatField('baseline intensity',validators = [InputRequired()])
+    r_cutoff = FloatField('right tolerance',validators = [InputRequired()])
+    l_cutoff = FloatField('left tolerance',validators = [InputRequired()])
+    n_peaks = IntegerField('no. of peaks to match',validators = [InputRequired()])
     selected_elements = SelectMultipleField('Select Elements',
                                              choices=[(sym,elem) for sym,elem in elem_symb.items()] )
     PS = BooleanField('P')

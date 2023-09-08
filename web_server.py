@@ -106,6 +106,7 @@ def libs_analysis(filename, element_list, lower_wavelength_limit, upper_waveleng
 
 
 def resultplotter(data_fileloc, log_fileloc, result_fileloc, output_fileloc, annotations=True):
+
     data = pd.read_csv(data_fileloc, header=None)
 
     # First column is 'wavelength' and the second column is 'intensity'
@@ -129,10 +130,11 @@ def resultplotter(data_fileloc, log_fileloc, result_fileloc, output_fileloc, ann
     keep_phrases = ["lower_wavelength_limit :: ", "upper_wavelength_limit :: ", "baseline_intensity :: "]
     with open(infile) as f:
         file_csv = f.readlines()
+        
     for line in file_csv:
         for phrase in keep_phrases:
             if phrase in line:
-                graph_parameters.append(line[-6:-1])
+                graph_parameters.append(line.split(' :: ')[1])
                 break
 
     # Opening JSON file
@@ -234,6 +236,10 @@ def home():
         return render_template('home.html', form=form, sess=session['uid'])
 
     if request.method == 'GET':
+        form.r_cutoff.data = 0.2
+        form.l_cutoff.data = 0.2
+        form.n_peaks.data = 3
+
         if not 'log' in session:
             session['log'] = dict()
         if session.new:

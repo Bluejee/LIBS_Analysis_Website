@@ -1,7 +1,10 @@
 function plotGraph() {
     const fileInput = document.getElementById('file');
     const file = fileInput.files[0];
-    const file_input = file.name;
+    const file_input = file.name;    
+    document.getElementById('filetext').innerHTML = file_input;
+
+
 
     if (file) {
         const reader = new FileReader();
@@ -11,16 +14,21 @@ function plotGraph() {
             const lines = d3.csvParseRows(content);
             const x_list = [];
             const y_list = [];
-            for (let i = 1; i < lines.length; i++) {  // Start from index 1 to skip header
+            for (let i = 0; i < lines.length; i++) {  // Start from index 1 to skip header
                 x_list.push(lines[i][0]);
                 y_list.push(lines[i][1]);
             }
+            max_wavelength = Math.max.apply(Math,x_list);
+            min_wavelength =Math.min.apply(Math,x_list);
+            document.getElementById('lower_wave').value = min_wavelength;
+            document.getElementById('upper_wave').value = max_wavelength;
+
             var trace1 = {
                 x: x_list,
                 y: y_list,
                 type: 'line',
                 line: {
-                    color: 'rgb(255, 0, 255)',
+                    color: 'rgb(236, 177, 35)',
                     width: 3
                   }
 
@@ -31,31 +39,31 @@ function plotGraph() {
                 title: {
                     text: file_input,
                     font:{
-                        color:'blue'
+                        color:'rgb(255,255,255)'
                     }
                 },
                 xaxis: {
                     title: {
-                        text: lines[0][0],
+                        text: 'wavelength',
                         font: {
-                            color:'#00FF00'
+                            color:'rgb(204, 204, 204)'
                         }
                     },
-                    gridcolor: '#a1a1a1',
+                    gridcolor: 'rgba(161, 161, 161, .5)',
                     tickfont: {
-                        color: '#98FB98' // Set x-axis tick label color
+                        color: '#rgb(204, 204, 204)' // Set x-axis tick label color
                     }
                 },
                 yaxis: {
                     title:{ 
-                        text:lines[0][1],
+                        text:'Intensity',
                         font:{
-                            color: '#00FF00'
+                            color: '#rgb(204, 204, 204)'
                         }
                     },
                     gridcolor: '#a1a1a1',
                     tickfont: {
-                        color: '#98FB98' // Set y-axis tick label color
+                        color: '#rgb(204, 204, 204)' // Set y-axis tick label color
                     }
                 }
             };

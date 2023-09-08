@@ -1,12 +1,30 @@
 {% extends "layout.html" %}
 {% block content%}
+<div class = 'sidebar'>
+	<b>Documentation</b>
+	<ul>
+		<li> <a href="#libs">LIBS</a></li>
+		<li> <a href="#doc-param">Input Parameters</a></li>
+		<li><a href="#doc-results">Results and interpretation</a> </li>
+		<li><a href="#doc-contributing">Contributing</a></li>
+	</ul>
+</div>
+<main class="main">
+<section>
+	
 	<h1>DOCUMENTATION</h1>
 	<hr>
-	<p>Laser Induced Breakdown Spectroscopy(LIBS) is a versatile tool for quantitatively and qualitatively analyzing a sample using laser ablation. It is a rapid and portable technique that requires no sample preparation. In LIBS the optical emissions from the plasma plume produced by the pulsed laser ablation of the sample surface are recorded and compared to a database of atomic emission spectra of known materials.</p>
+	<article class="container">
+		<h2 id="#libs">LIBS</h2>
+		<p>Laser Induced Breakdown Spectroscopy(LIBS) is a versatile tool for quantitatively and qualitatively analyzing a sample using laser ablation. It is a rapid and portable technique that requires no sample preparation. In LIBS the optical emissions from the plasma plume produced by the pulsed laser ablation of the sample surface are recorded and compared to a database of atomic emission spectra of known materials.</p>
+	
+	</article>
 	<hr>
+	<article class="container">
+		<h2 id="doc-param">Input Parameters</h2>
 
-	<h2>Input Parameters</h2>
-		<p><u>Spectral Data Input</u> : ‘openLIBS’ accepts the spectral data from the user in CSV format which contains a 2D array with the first column representing the wavelength (nm) and the second column representing the corresponding intensities of atomic emissions from the sample. Header should not be included. An image of a sample spectral data is provided for reference.
+		
+		<p><u>Spectral Data Input</u> : <q>openLIBS</q> accepts the spectral data from the user in CSV format which contains a 2D array with the first column representing the wavelength (nm) and the second column representing the corresponding intensities of atomic emissions from the sample. Header should not be included. An image of a sample spectral data is provided for reference.
 		<br>
 		<u>Left Wavelength Limit</u> : The minimum value of the wavelength range across which the data needs to be analyzed.
 		<br>
@@ -19,21 +37,76 @@
 		<u>Allowed Right Error</u> : The maximum difference in wavelength (nm) allowed for a peak to be considered a match.
 		<br>
 		<u>Match Threshold</u> : The minimum number of peaks that must match the standard peaks for an element to be considered a match.</p>
+	</article>
 		<hr>
-
-	<h2>Results and Interpretation</h2>
-	<ul>
-		<li>List of the detected elements.</li>
-		<li>A plot showing the detected peaks for each element.</li>
-		<li>An array corresponding to each detected element that includes the observed peak value in the spectrum, the intensity or strength of the peak at the given wavelength, the standard wavelength value for the peak, and the ionization state of the element corresponding to the peak.</li>
-	</ul>
+	<article class="container">
+		<h2 id="doc-results">Results and Interpretation</h2>
+		<ul>
+			<li>List of the detected elements.</li>
+			<li>A plot showing the detected peaks for each element.</li>
+			<li>An array corresponding to each detected element that includes the observed peak value in the spectrum, the intensity or strength of the peak at the given wavelength, the standard wavelength value for the peak, and the ionization state of the element corresponding to the peak.</li>
+		</ul>
+	</article>
 	<hr>
+	<article class="container">
+		<h2 id="doc-contributing">Contributing</h2>
+		openLIBS is a community project maintained for and by its users. There are many ways you can help!
+		<ul>
+			<li>Help other users on discourse</li>
+			<li>Report a bug or request a feature on GitHub or</li>
+			<li>Improve the documentation and code.</li>
+		</ul>
+	</article>
+</section>
 
-	<h2>Contributing</h2>
-	openLIBS is a community project maintained for and by its users. There are many ways you can help!
-	<ul>
-		<li>Help other users on discourse</li>
-		<li>Report a bug or request a feature on GitHub or</li>
-		<li>Improve the documentation and code.</li>
-	</ul>
+</main>
+
+<style>
+
+	main {
+		position: relative;
+		margin-left: 10rem;
+	}
+	body{
+		background: url('/static/media/bgtrans.png'), linear-gradient(45deg, rgba(6, 77, 143, 1) 0%, rgba(6, 47, 99, 1) 72%, rgba(5, 9, 44, 1) 100%);
+    	background-size: 100%  98dvh;
+    	background-repeat: repeat;
+    	background-blend-mode: hard-light;;
+	}
+	.sidebar {		
+		width: 9rem;
+  		position: fixed;
+ 		z-index: 1;
+  		top: 20%;
+  		left: 10px;
+ 		background: #534566;
+		color: white;
+  		overflow-x: hidden;
+		margin-right: 8px;
+		padding-right: 1rem;
+		padding-left: .5rem;
+		padding-top: .6rem;
+
+		& a {
+			text-decoration: none;
+			color: inherit;
+			all:inherit;
+			cursor: pointer;
+		}
+	}
+	section {
+		background: revert;
+		& article {
+			width: auto;
+			margin-left: 20%;
+			padding-left: 10%;
+		}
+
+		& h1 {
+			text-align: center;
+		}
+	}
+
+	
+</style>
 {% endblock content%}

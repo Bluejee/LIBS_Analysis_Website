@@ -1,11 +1,39 @@
 {% extends "layout.html" %}
 {% block content%}
+
+<style>
+
+    .results-section-1{
+        display: grid;
+        grid-template-columns: auto auto;
+    }
+
+    .result-plot{
+        padding: 5%;
+        padding-top: 1%;
+        background: transparent;
+        grid-column: 1;
+    }
+    .download-btn{
+        grid-column: 2;
+        align-self: center;
+        justify-self: center;
+        padding-right: 6%;
+        margin-right: 4%;
+    }
+
+</style>
+
+<section class="results-section-1">
     {% if output %}
-        <a href="/download"><button class='btn btn-info'>Download</button></a> <br>
-        {{ output.plotly_div | safe}}
+        
+        <div class="result-plot"> {{ output.plotly_div | safe}}</div>
+        <div class="download-btn">
+            <a href="/download"><button class='btn btn-info' download>Download</button></a> <br>
+        </div>
     {% endif %}
 {% endblock content%}
-
+</section>
 
 {% block JScript %}
 <script>
