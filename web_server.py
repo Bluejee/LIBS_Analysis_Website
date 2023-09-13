@@ -1,4 +1,5 @@
 import os
+import ast
 import datetime as dt
 import secrets
 import json
@@ -8,7 +9,9 @@ import plotly.graph_objs as go
 import plotly.io as pio
 import pandas as pd
 from scipy.signal import find_peaks
-from flask import Flask, request, render_template, url_for, redirect, session, send_file
+from flask import Flask, request, render_template, url_for, redirect, session, send_file, make_response, jsonify
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from werkzeug.utils import secure_filename
 from OpenLIBS.analysis import element_list_comparison
 from forms import InputForm, elem_symb
@@ -16,7 +19,12 @@ from forms import InputForm, elem_symb
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '73e2889840a574502969a1ad279ef26f'
 
+limiter = Limiter(app=app, key_func=get_remote_address)
+
 UPLOAD_FOLDER = os.path.join(app.root_path, 'session_files')
+TEMP_FOLDER = os.path.join(app.root_path, 'temp_files')
+ALLOWED_REQUESTS = "1/30 seconds"
+
 
 
 def save_file(form_file):
@@ -39,16 +47,14 @@ def save_file(form_file):
     return fname
 
 
-def libs_analysis(filename, element_list, lower_wavelength_limit, upper_wavelength_limit, baseline_intensity,
-                  line_type='P', lower_error=0.2, upper_error=0.2, match_threshold=3):
-    data_path = os.path.join(UPLOAD_FOLDER, session['uid'], filename)
-    filename_no_extension, f_ext = os.path.splitext(filename)
-    comparison_log_path = os.path.join(
-        UPLOAD_FOLDER, session['uid'], 'output', f"Full_Comparison_{filename_no_extension}.json")
-    simulation_log_path = os.path.join(
-        UPLOAD_FOLDER, session['uid'], 'output', f"Simulation_Details_{filename_no_extension}.log")
+def libs_analysis( element_list, lower_wavelength_limit, upper_wavelength_limit, baseline_intensity, data=None, filename=None,
+                  line_type='P', lower_error=0.2, upper_error=0.2, match_threshold=3, api=False):
+    
 
-    data = np.genfromtxt(data_path, delimiter=',')
+    if filename:
+        data_path = os.path.join(UPLOAD_FOLDER, session['uid'], filename)
+        filename_no_extension, f_ext = os.path.splitext(filename)
+        data = np.genfromtxt(data_path, delimiter=',')
 
     if line_type:
         line_type = 'P'
@@ -80,18 +86,38 @@ def libs_analysis(filename, element_list, lower_wavelength_limit, upper_waveleng
                                   lower_error=lower_error,
                                   upper_error=upper_error,
                                   match_threshold=match_threshold)
+    # Extract the detected element list based on 'is_match' key in the 'out' dictionary
+    detected_element_list = [element for element,
+                                         result in out.items() if result['is_match']]
+    
+    if api:
+        log_dict = {
+            'lower_wavelength_limit' : lower_wavelength_limit,
+            'upper_wavelength_limit' :upper_wavelength_limit,
+            'baseline_intensity' :baseline_intensity,
+            'lower_error' :lower_error,
+            'upper_error' :upper_error,
+            'line_type' :line_type,
+            'match_threshold' :match_threshold,
+            'Compared Elements' :element_list,
+            'Detected Elements' : detected_element_list
+        }
+        return out,log_dict,'200'
+    
+    comparison_log_path = os.path.join(
+        UPLOAD_FOLDER, session['uid'], 'output', f"Full_Comparison_{filename_no_extension}.json")
+    simulation_log_path = os.path.join(
+        UPLOAD_FOLDER, session['uid'], 'output', f"Simulation_Details_{filename_no_extension}.log")
 
     # Save the comparison results to a JSON file
     with open(comparison_log_path, 'w') as log_file:
         json.dump(out, log_file)
 
-    # Extract the detected element list based on 'is_match' key in the 'out' dictionary
-    detected_element_list = [element for element,
-                                         result in out.items() if result['is_match']]
+    
 
     # Write the detected element list to the log file
     with open(simulation_log_path, 'w') as log_file:
-        log_file.write('Simulation Logs\n')
+        log_file.write('##Simulation Logs##\n')
         log_file.write(f'lower_wavelength_limit :: {lower_wavelength_limit}\n')
         log_file.write(f'upper_wavelength_limit :: {upper_wavelength_limit}\n')
         log_file.write(f'baseline_intensity :: {baseline_intensity}\n')
@@ -128,6 +154,7 @@ def resultplotter(data_fileloc, log_fileloc, result_fileloc, output_fileloc, ann
 
     graph_parameters = []
     keep_phrases = ["lower_wavelength_limit :: ", "upper_wavelength_limit :: ", "baseline_intensity :: "]
+
     with open(infile) as f:
         file_csv = f.readlines()
         
@@ -256,7 +283,7 @@ def home():
 @app.route('/results')
 def results():
     filename = session['recent_file']
-    filename_no_extension, f_ext = os.path.splitext(filename)
+    filename_no_extension, _ = os.path.splitext(filename)
     comparison_log_path = os.path.join(
         UPLOAD_FOLDER, session['uid'], 'output', f"Full_Comparison_{filename_no_extension}.json")
     simulation_log_path = os.path.join(
@@ -315,7 +342,47 @@ def download_file():
     return send_file(zip_path, as_attachment=True)
 
 
+def default_error_responder(x):
+    return jsonify({'status':'429', 'description':f' Too many request. Allowed: {ALLOWED_REQUESTS}'})
+
+
+@app.route('/api/analyze', methods=['GET', 'POST'])
+@limiter.limit(ALLOWED_REQUESTS,on_breach=default_error_responder)
+def api_analyze():
+
+    if request.method == 'GET':
+        return {'status':'100'}
+    
+    
+    name_log = request.files['log']
+    data = name_log.read()
+    data = str(data,'UTF-8').split('\r\n')
+    data = [item for item in data if not item.startswith('#') ]
+    data_set = request.files['file'].read()
+    data_set = str(data_set,'UTF-8')
+    # data_set = data_set.replace('\r\n', '\n')
+    data_set = np.genfromtxt(data_set.splitlines(), delimiter=',', dtype=float)
+    # data_set = np.fromstring(data_set)
+    params = {param:val for (param,val) in list(map(lambda v: v.split(' :: '), data))}
+    comp, log, status = libs_analysis(data=data_set,
+                                      element_list=ast.literal_eval(params['Compared Elements']),
+                                      lower_wavelength_limit=float(params['lower_wavelength_limit']),
+                                      upper_wavelength_limit=float(params['upper_wavelength_limit']),
+                                      baseline_intensity=float(params['baseline_intensity']),
+                                      line_type=params['line_type'],
+                                      lower_error=float(params['lower_error']),
+                                      upper_error=float(params['upper_error']),
+                                      match_threshold=int(params['match_threshold']),
+                                      api=True
+                                      )
+
+
+    return {'status':status, 'log':log , 'result': comp}
+
+
 if __name__ == '__main__':
     if not os.path.isdir(UPLOAD_FOLDER):
         os.mkdir(UPLOAD_FOLDER)
+    if not os.path.isdir(TEMP_FOLDER):
+        os.mkdir(TEMP_FOLDER)
     app.run(debug=True)
