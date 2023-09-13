@@ -385,4 +385,5 @@ if __name__ == '__main__':
         os.mkdir(UPLOAD_FOLDER)
     if not os.path.isdir(TEMP_FOLDER):
         os.mkdir(TEMP_FOLDER)
-    app.run(debug=True)
+    # app.run(debug=True)
+    app.run(debug=False)
