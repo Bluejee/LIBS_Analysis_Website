@@ -1,4 +1,50 @@
 {% extends "layout.html" %}
 {% block content%}
+
+<section>
+<article class="container">
     <h1>About PAGE</h1>
+	<p>The openLIBS website provides a convenient environment for the Laser Induced Breakdown Spectroscopy (LIBS) data analysis to obtain qualitative information about the sample. The website uses the latest version of the <a href="https://github.com/Bluejee/OpenLIBS">OpenLIBS package</a> as a back end enabling direct and quick access for LIBS analysis.</p>
+
+	<p>The team that made this work possible :<br>
+<a href="https://github.com/Bluejee">Balakrishna Prabhu B. N.</a>, <a href="https://github.com/venomslasher">N. Gokul</a>, 
+<a href="https://github.com/4marnath">Amarnath</a>, <a href="https://github.com/VipinSatheesh">Vipin Satheesh</a>, 
+and <a href="https://github.com/NooraNasreen">Noora Nasreen</a></p>
+	
+</article>
+<hr>
+<article class="container">
+	<h2>Acknowledgments</h2>
+	<P>The website development was initiated under the guidance of <a href="https://www.anoopkk.com/">Dr. Anoop K. K.
+
+	</a> and carried out in collaboration with <a href="https://physics.cusat.ac.in/infrastructure/research-labs/5/">
+		Applied Optics Division</a>, Department of Physics, Cochin University of Science and Technology, India. </p>
+
+	<p>We thank Mrs. Lekha Mary John and Mr. Rajeev Rajendran for their timely insights and support. 
+		We express our sincere gratitude to Ms. Leya Pauly, Ms. V. S. Sreeranjini Pai and Ms. Avani S. R. for their contributions.</p>
+
+	<p>The standard spectroscopic data were taken from National Institute of Standards and Technology (NIST) 
+		<a href="https://www.nist.gov/pml/atomic-spectra-database">Atomic Spectra Database</a>.</p>
+</article>
+</section>
+
+<style>
+	section {
+		& a {
+			color: #e5ca98;
+		}
+	
+		& article {
+			border:1px solid black;
+			padding: 2%;
+		}
+
+		& hr {
+			margin-left: -20;
+			margin-right: -20;
+			overflow: hidden;
+		}
+	}
+
+</style>
 {% endblock content%}
